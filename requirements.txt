@@ -1,0 +1,8 @@
+jinja2
+python-box
+black
+click
+pygments
+pyyaml
+langchain
+tabulate
