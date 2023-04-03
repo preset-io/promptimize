@@ -1,0 +1,4 @@
+openai
+jinja2
+black
+click
