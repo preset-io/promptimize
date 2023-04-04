@@ -13,9 +13,11 @@ export OPENAI_API_KEY=sk-{REDACTED}
 ```bash
 # NOTE: CLI is `promptimize`, but `p9e` is a shorter synonym, can be used interchangibly
 
-# First let's 
+# First let's run some of the examples
 p9e ./examples
-p9e ./examples
+
+# Now the same but with verbose output
+p9e ./examples --verbose
 
 ```
 

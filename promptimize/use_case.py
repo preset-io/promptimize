@@ -1,7 +1,12 @@
 from textwrap import dedent
 
+import yaml
+from pygments import highlight
+from pygments.lexers import YamlLexer
+from pygments.formatters import TerminalFormatter
+
 from promptimize.openai_api import execute_prompt
-from promptimize.utils import is_iterable
+from promptimize.utils import is_iterable, CustomDumper
 from promptimize.simple_jinja import process_template
 
 
@@ -42,25 +47,30 @@ class SimpleUseCase(BaseUseCase):
 
         self.was_tested = True
 
-    def print(self, verbose=False):
+    def _serialize_for_print(self, verbose=False):
+        d = {
+            "user_input": self.user_input,
+            "response_text": self.response_text,
+        }
         if verbose:
-            print("=" * 80)
-            print(self.prompt)
-            print("-" * 80)
-            print(self.response)
-            print("-" * 80)
-        else:
-            print("=" * 80)
-            print(self.user_input)
-            print("-" * 80)
-            print(self.response_text)
+            d.update({
+                "response": self.response,
+                "prompt": self.prompt,
+            })
         if self.was_tested:
-            if not self.test_results:
-                print("TEST: SUCCESS")
-            else:
-                print("TEST: FAILED!")
-                print(self.test_results)
-        print("." * 80)
+            d.update({
+                "test_results": self.test_results,
+            })
+        return d
+
+
+
+    def print(self, verbose=False):
+        output = self._serialize_for_print(verbose)
+        yaml_data = yaml.dump(output, Dumper=CustomDumper)
+        highlighted_yaml = highlight(yaml_data, YamlLexer(), TerminalFormatter())
+        print("-" * 80)
+        print(highlighted_yaml)
 
     def _generate_prompt(self):
         return self.user_input
