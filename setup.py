@@ -18,5 +18,5 @@ setup(
     },
     author='Maxime Beauchemin',
     author_email='maximebeauchemin@gmail.com',
-    description='A framework to generate prompts for GPT and other LLMs and evaluate them',
+    description='A python framework to generate and evaluate prompts for GPT at scale',
 )
