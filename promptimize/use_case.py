@@ -1,12 +1,13 @@
 from textwrap import dedent
+import json
 
 import yaml
 from pygments import highlight
-from pygments.lexers import YamlLexer
+from pygments.lexers import YamlLexer, JsonLexer
 from pygments.formatters import TerminalFormatter
 
 from promptimize.openai_api import execute_prompt
-from promptimize.utils import is_iterable, CustomDumper
+from promptimize import utils
 from promptimize.simple_jinja import process_template
 
 
@@ -25,33 +26,41 @@ class BaseUseCase:
 
 class SimpleUseCase(BaseUseCase):
     """A generic class where each instance represents a specific use case"""
+    response_is_json = False
 
     def __init__(self, user_input, validators=None):
         self.user_input = user_input
         self.response = None
         self.response_text = None
+        self.response_json = None
         self.prompt = None
         self.has_run = False
         self.was_tested = False
         self.test_results = None
 
         self.validators = validators or []
-        if not is_iterable(self.validators):
+        if not utils.is_iterable(self.validators):
             self.validators = [self.validators]
 
     def test(self):
         for validator in self.validators:
             self.test_results = validator(self.response_text)
-            if not self.test_results:
-                print("FAILED!")
 
         self.was_tested = True
 
     def _serialize_for_print(self, verbose=False):
         d = {
             "user_input": self.user_input,
-            "response_text": self.response_text,
         }
+        if self.response_json:
+            d.update({
+                "response_json": self.response_json,
+            })
+        else:
+            d.update({
+                "response_text": self.response_text,
+            })
+
         if verbose:
             d.update({
                 "response": self.response,
@@ -63,14 +72,19 @@ class SimpleUseCase(BaseUseCase):
             })
         return d
 
-
-
-    def print(self, verbose=False):
+    def print(self, verbose=False, style="yaml"):
+        style = style or "yaml"
         output = self._serialize_for_print(verbose)
-        yaml_data = yaml.dump(output, Dumper=CustomDumper)
-        highlighted_yaml = highlight(yaml_data, YamlLexer(), TerminalFormatter())
+        highlighted = None
+        if style == "yaml":
+            data = yaml.dump(output, Dumper=utils.CustomDumper)
+            highlighted = highlight(data, YamlLexer(), TerminalFormatter())
+            highlighted = data
+        elif style == "json":
+            data = json.dumps(output, indent=2)
+            highlighted = highlight(data, JsonLexer(), TerminalFormatter())
         print("-" * 80)
-        print(highlighted_yaml)
+        print(highlighted)
 
     def _generate_prompt(self):
         return self.user_input
@@ -79,15 +93,26 @@ class SimpleUseCase(BaseUseCase):
         self.prompt = self._generate_prompt()
         self.response = execute_prompt(self.prompt)
         self.response_text = self.response.choices[0].text.strip()
+        if self.response_is_json:
+            self.response_json = utils.try_to_json_parse(self.response.choices[0].text)
         self.has_run = True
 
 
 ##########################################################################
+class JsonUseCase(SimpleUseCase):
+
+    def _generate_prompt(self):
+        return json.dumps({
+            "user_input": self.user_input,
+        })
+
+
+
 class TemplatedUseCase(SimpleUseCase):
     template_defaults = {}
     prompt_template = "{{ user_input }}"
 
-    def __init__(self, user_input, **template_kwargs):
+    def __init__(self, user_input, validators=None, **template_kwargs):
         self.template_kwargs = template_kwargs
         return super().__init__(user_input)
 
@@ -110,28 +135,3 @@ class TemplatedUseCase(SimpleUseCase):
         return self._process_template()
 
 
-class SqlUseCase(TemplatedUseCase):
-    template_defaults = {"dialect": "BigQuery"}
-    prompt_template = dedent(
-        """\
-    given the following set of table schemas:
-    ```
-        {{ table_schemas }}
-    ```
-    can you write a SQL query for {{ dialect }} that answers:
-    {{ user_input }}
-    """
-    )
-
-    def get_table_schemas(self):
-        return dedent(
-            """\
-        CREATE TABLE world_population (
-            country_name STRING,
-            year DATE,
-            population_total INT,
-        );"""
-        )
-
-    def get_extra_template_context(self):
-        return {"table_schemas": self.get_table_schemas()}

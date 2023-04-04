@@ -4,8 +4,8 @@ class Suite:
     def __init__(self, use_cases):
         self.use_cases = use_cases
 
-    def execute(self, verbose):
+    def execute(self, verbose, style):
         for use_case in self.use_cases:
             use_case.run()
             use_case.test()
-            use_case.print(verbose=verbose)
+            use_case.print(verbose=verbose, style=style)

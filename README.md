@@ -1,5 +1,34 @@
+<img src="https://user-images.githubusercontent.com/487433/229948453-36cbc2d1-e71f-4e87-9111-ab428bc96f4c.png" width=300/>
+
+**Promptimize** is a framework that accelerates prompt enginering,
+crafting and evaluation.
+
+Define and express your prompts as code, define eval functions, define
+variations of prompts dynamically execute variations in parallel, across
+different engines, and get reporting on what is performing well.
+
+Promptimize is programmatic way to define and tune your prompt and eval
+functions in python quickly, and that supports iterations at scale.
+
+## Information architecture
+* **UseCase:** a UseCase instance is a certain test case, a single prompt
+  with an associated set of eval functions to rate it's success
+* **Eval:** an evaluation function that reads the response and returns
+  a success rate between `0` and `1`
+* **Suite:**: a Suite is a collection of UseCase, it's able to run things
+  accumulate results, and print reports about its collection of use cases
+
+## Princicples
+* **Configuration as code:** all use cases, suites and evals are defined as code,
+  this makes it easy to dynamically generate all sorts of use cases and suites
+* **Constant suggestion**: the framework is great at running your use cases
+  and evaluating them, but GPT engines are great at suggesting improvements
+  on each prompt too
+
 ## Setup
 ```bash
+# in dev mode
+git clone git@github.com:preset-io/promptimize.git
 pip -e .
 ```
 
@@ -8,6 +37,51 @@ pip -e .
 First you'll need an openai API key, let's set it as an env var
 ```bash
 export OPENAI_API_KEY=sk-{REDACTED}
+```
+
+## Example
+```python
+from promptimize.use_case import SimpleUseCase, TemplatedUseCase
+
+# Promptimize will scan the folder and find all UseCase objects and derivatives
+uses_cases = [
+
+    # Prompting "hello there" and making sure there's "hi" somewhere in the answer
+    SimpleUseCase("hello there!", lambda x: "hi" in x.lower()),
+
+    # making sure zappa is in the list of top 50 guitar players!
+    SimpleUseCase("who are the top 50 best guitar players of all time?", lambda x: "zappa" in x.lower()),
+]
+
+# deriving TemplatedUseCase to do some sql stuff
+class SqlUseCase(TemplatedUseCase):
+    template_defaults = {"dialect": "Postgres"}
+    prompt_template = """\
+    given these SQL table schemas:
+        CREATE TABLE world_population (
+            country_name STRING,
+            year DATE,
+            population_total INT,
+        );
+
+    please answer the following question with SQL:
+      * uses lowercase characters for reserve words
+      * uses 2 indents, no tabs!
+
+    So, can you write a SQL query for {{ dialect }} that answers this user prompt:
+    {{ user_input }}
+    """
+
+    def get_extra_template_context(self):
+        return {"table_schemas": self.get_table_schemas()}
+
+another_list = [
+    TemplatedUseCase(
+        "give me the top 10 countries with the highest net increase of population over the past 25 years?",
+        dialect="BigQuery",
+        validators=[lambda x: x.trim().startswith('SELECT')],
+    ),
+]
 ```
 
 ```bash

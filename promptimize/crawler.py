@@ -4,8 +4,10 @@ import pkgutil
 from pathlib import Path
 from typing import List, Type, Any, Union
 
+
 def is_instance_or_derivative(obj: Any, object_type: Type) -> bool:
     return isinstance(obj, object_type)
+
 
 def discover_objects(path: str, object_type: Type) -> List[Any]:
     objects = []
