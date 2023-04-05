@@ -11,7 +11,7 @@ from promptimize import utils
 from promptimize.simple_jinja import process_template
 
 
-class BaseUseCase:
+class BasePrompt:
     """Abstract base class for a use case"""
 
     def run(self):
@@ -24,12 +24,13 @@ class BaseUseCase:
         return NotImplementedError
 
 
-class SimpleUseCase(BaseUseCase):
+class SimplePrompt(BasePrompt):
     """A generic class where each instance represents a specific use case"""
 
     response_is_json = False
 
-    def __init__(self, user_input, validators=None):
+    def __init__(self, user_input, evaluators=None, key=None):
+        self.key = key or utils.short_hash(user_input)
         self.user_input = user_input
         self.response = None
         self.response_text = None
@@ -39,14 +40,14 @@ class SimpleUseCase(BaseUseCase):
         self.was_tested = False
         self.test_results = None
 
-        self.validators = validators or []
-        if not utils.is_iterable(self.validators):
-            self.validators = [self.validators]
+        self.evaluators = evaluators or []
+        if not utils.is_iterable(self.evaluators):
+            self.evaluators = [self.evaluators]
 
     def test(self):
         test_results = []
-        for validator in self.validators:
-            result = validator(self.response_text)
+        for evaluator in self.evaluators:
+            result = evaluator(self.response_text)
             if not (utils.is_numeric(result) and 0 <= result <= 1):
                 raise Exception("Value should be between 0 and 1")
             test_results.append(result)
@@ -57,6 +58,7 @@ class SimpleUseCase(BaseUseCase):
 
     def _serialize_for_print(self, verbose=False):
         d = {
+            "key": self.key,
             "user_input": self.user_input,
         }
         if self.response_json:
@@ -82,6 +84,7 @@ class SimpleUseCase(BaseUseCase):
         if self.was_tested:
             d.update(
                 {
+                    "test_results_avg": self.test_results_avg,
                     "test_results": self.test_results,
                 }
             )
@@ -92,7 +95,7 @@ class SimpleUseCase(BaseUseCase):
         output = self._serialize_for_print(verbose)
         highlighted = None
         if style == "yaml":
-            data = yaml.dump(output, Dumper=utils.CustomDumper, sort_keys=False)
+            data = yaml.dump(output, sort_keys=False)
             highlighted = highlight(data, YamlLexer(), TerminalFormatter())
         elif style == "json":
             data = json.dumps(output, indent=2)
@@ -103,30 +106,21 @@ class SimpleUseCase(BaseUseCase):
     def _generate_prompt(self):
         return self.user_input
 
-    def run(self):
+    def run(self, model_id="text-davinci-003", max_tokens=1000):
         self.prompt = self._generate_prompt()
-        self.response = execute_prompt(self.prompt)
-        self.response_text = self.response.choices[0].text.strip()
+        self.response = execute_prompt(self.prompt, model_id=model_id, max_tokens=max_tokens)
+        self.raw_response_text = self.response.choices[0].text
+        self.response_text = self.raw_response_text.strip('\n')
         if self.response_is_json:
             self.response_json = utils.try_to_json_parse(self.response.choices[0].text)
         self.has_run = True
 
 
-##########################################################################
-class JsonUseCase(SimpleUseCase):
-    def _generate_prompt(self):
-        return json.dumps(
-            {
-                "user_input": self.user_input,
-            }
-        )
-
-
-class TemplatedUseCase(SimpleUseCase):
+class TemplatedPrompt(SimplePrompt):
     template_defaults = {}
     prompt_template = "{{ user_input }}"
 
-    def __init__(self, user_input, validators=None, **template_kwargs):
+    def __init__(self, user_input, evaluators=None, **template_kwargs):
         self.template_kwargs = template_kwargs
         return super().__init__(user_input)
 

@@ -3,19 +3,19 @@
 **Promptimize** is a framework that accelerates prompt enginering,
 crafting and evaluation.
 
-Define and express your prompts as code, define eval functions, define
-variations of prompts dynamically execute variations in parallel, across
-different engines, and get reporting on what is performing well.
+Use `promptimize` to define your prompts as code, tie them to eval functions,
+generate prompt variations dynamically, execute and rank across different
+engines, and get reporting on how your prompts perform.
 
-Promptimize is programmatic way to define and tune your prompt and eval
-functions in python quickly, and that supports iterations at scale.
+Promptimize offers a programmatic way to define and tune your prompt and eval
+functions in python quickly, this allows you to iterate quickly.
 
 ## Information architecture
-* **UseCase:** a UseCase instance is a certain test case, a single prompt
+* **Prompt:** a Prompt instance is a certain test case, a single prompt
   with an associated set of eval functions to rate it's success
 * **Eval:** an evaluation function that reads the response and returns
   a success rate between `0` and `1`
-* **Suite:**: a Suite is a collection of UseCase, it's able to run things
+* **Suite:**: a Suite is a collection of Prompt, it's able to run things
   accumulate results, and print reports about its collection of use cases
 
 ## Princicples
@@ -41,20 +41,20 @@ export OPENAI_API_KEY=sk-{REDACTED}
 
 ## Example
 ```python
-from promptimize.use_case import SimpleUseCase, TemplatedUseCase
+from promptimize.prompt import SimplePrompt, TemplatedPrompt
 
-# Promptimize will scan the folder and find all UseCase objects and derivatives
+# Promptimize will scan the folder and find all Prompt objects and derivatives
 uses_cases = [
 
     # Prompting "hello there" and making sure there's "hi" somewhere in the answer
-    SimpleUseCase("hello there!", lambda x: "hi" in x.lower()),
+    SimplePrompt("hello there!", lambda x: "hi" in x.lower()),
 
     # making sure zappa is in the list of top 50 guitar players!
-    SimpleUseCase("who are the top 50 best guitar players of all time?", lambda x: "zappa" in x.lower()),
+    SimplePrompt("who are the top 50 best guitar players of all time?", lambda x: "zappa" in x.lower()),
 ]
 
-# deriving TemplatedUseCase to do some sql stuff
-class SqlUseCase(TemplatedUseCase):
+# deriving TemplatedPrompt to do some sql stuff
+class SqlPrompt(TemplatedPrompt):
     template_defaults = {"dialect": "Postgres"}
     prompt_template = """\
     given these SQL table schemas:
@@ -69,10 +69,10 @@ class SqlUseCase(TemplatedUseCase):
     """
 
 another_list = [
-    TemplatedUseCase(
+    TemplatedPrompt(
         "give me the top 10 countries with the highest net increase of population over the past 25 years?",
         dialect="BigQuery",
-        validators=[lambda x: x.trim().startswith('SELECT')],
+        evaluators=[lambda x: x.trim().startswith('SELECT')],
     ),
 ]
 ```
@@ -93,4 +93,7 @@ Now take a look at the definitions of what you just ran here ->
 
 ## Resources
 * [GPT interactive playground](https://platform.openai.com/playground/p/default-adv-tweet-classifier)
- 
+
+## TODO
+* parallel execution
+* parameterize your run, pick your engine

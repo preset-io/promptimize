@@ -1,9 +1,9 @@
 from textwrap import dedent
 
-from promptimize.use_case import SimpleUseCase, TemplatedUseCase
+from promptimize.prompt import SimplePrompt, TemplatedPrompt
 from promptimize.suite import Suite
 
-class SqlUseCase(TemplatedUseCase):
+class SqlPrompt(TemplatedPrompt):
     template_defaults = {"dialect": "BigQuery"}
     prompt_template = dedent("""\
     given these SQL table schemas:
@@ -31,7 +31,7 @@ class SqlUseCase(TemplatedUseCase):
     def get_extra_template_context(self):
         return {"table_schemas": self.get_table_schemas()}
 
-class SqlUseCase2(SqlUseCase):
+class SqlPrompt2(SqlPrompt):
     response_is_json = True
     prompt_template = dedent("""\
     using SQL code, answer the following user question:
@@ -61,13 +61,13 @@ class SqlUseCase2(SqlUseCase):
     pass
 
 uses_cases = [
-    SimpleUseCase("hello there!", lambda x: "hi" in x.lower()),
-    #SqlUseCase("can you tell me the current population of each country?", lambda x: 'SELECT' in x),
-    #SqlUseCase("which country have the fastest growth rate over the past 10 years?"),
-    #SqlUseCase(
+    SimplePrompt("hello there!", lambda x: "hi" in x.lower()),
+    #SqlPrompt("can you tell me the current population of each country?", lambda x: 'SELECT' in x),
+    #SqlPrompt("which country have the fastest growth rate over the past 10 years?"),
+    #SqlPrompt(
     #    "which country have the fastest growth rate over the most recent 10 years of available data?"
     #),
-    SqlUseCase2(
+    SqlPrompt2(
         "give me the top 10 countries with the highest net increase of population over the past 25 years?"
     ),
 ]

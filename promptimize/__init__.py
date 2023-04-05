@@ -2,7 +2,7 @@ from textwrap import dedent
 
 import click
 
-from promptimize.use_case import BaseUseCase
+from promptimize.prompt import BasePrompt
 from promptimize.suite import Suite
 from promptimize.crawler import discover_objects
 
@@ -21,7 +21,9 @@ from promptimize.crawler import discover_objects
     default="yaml",
     help="json or yaml formatting",
 )
-def cli(path, verbose, style):
-    uses_cases = discover_objects(path, BaseUseCase)
+@click.option("--max-tokens", "-t", type=click.INT, help="max_tokens passed to the model")
+@click.option("--model-id", "-m", type=click.STRING, help="model_id as accepted by the openai API")
+def cli(path, verbose, style, max_tokens, model_id):
+    uses_cases = discover_objects(path, BasePrompt)
     suite = Suite(uses_cases)
     suite.execute(verbose=verbose, style=style)
