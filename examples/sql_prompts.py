@@ -34,7 +34,7 @@ class SqlPrompt(TemplatedPrompt):
         return {"table_schemas": self.get_table_schemas()}
 
 
-class SqlPrompt2(SqlPrompt):
+class SqlJsonPrompt(SqlPrompt):
     response_is_json = True
     prompt_template = dedent(
         """\
@@ -46,10 +46,18 @@ class SqlPrompt2(SqlPrompt):
 
 
     CREATE TABLE world_population (
-            country_name STRING,
-                year DATE,
-                    population_total INT
-                    );
+        country_name STRING,
+        year DATE,
+        population_total INT
+    );
+    your answer should be JSON and only valid JSON, following this format:
+    ```json
+    {
+        "sql": "the SQL you generated",
+        "tables": ["the tables you used in the query"]
+        "hints": "some hints to the user to improve or clarify their prompt",
+    }
+    ```
 
     SQL Formatting rules:
     1. dialect / syntax should be {{ dialect }}
@@ -57,23 +65,21 @@ class SqlPrompt2(SqlPrompt):
     3. Indent your SQL using 2 spaces, no tabs.
     4. use fully qualified table and column names
 
-    please provide your answer in a pure JSON blob (no other output please!) with the following keys:
-        "sql": the SQL you generated,
-        "hints": some hints as to how to improve the user prompt for better results
-
     """
     )
     pass
 
 
 uses_cases = [
-    SimplePrompt("hello there!", lambda x: "hi" in x.lower()),
-    # SqlPrompt("can you tell me the current population of each country?", lambda x: 'SELECT' in x),
-    # SqlPrompt("which country have the fastest growth rate over the past 10 years?"),
-    # SqlPrompt(
-    #    "which country have the fastest growth rate over the most recent 10 years of available data?"
-    # ),
-    SqlPrompt2(
+    SqlPrompt(
+        "can you tell me the current population of each country?",
+        lambda x: "SELECT" in x,
+    ),
+    SqlPrompt("which country have the fastest growth rate over the past 10 years?"),
+    SqlPrompt(
+        "which country have the fastest growth rate over the most recent 10 years of available data?"
+    ),
+    SqlJsonPrompt(
         "give me the top 10 countries with the highest net increase of population over the past 25 years?"
     ),
 ]

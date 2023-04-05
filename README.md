@@ -97,5 +97,8 @@ Now take a look at the definitions of what you just ran here ->
 * [GPT interactive playground](https://platform.openai.com/playground/p/default-adv-tweet-classifier)
 
 ## TODO
+* allow to actually run the SQL
+* do assertions on result sets
+* parameterize your run, pick your engine, temperatur
+* bring in the system message
 * parallel execution
-* parameterize your run, pick your engine

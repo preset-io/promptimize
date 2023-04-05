@@ -30,7 +30,7 @@ class SimplePrompt(BasePrompt):
         evaluators: Optional[Union[Callable, List[Callable]]] = None,
         key: Optional[str] = None,
     ) -> None:
-        self.key = key or utils.short_hash(input)
+        self.key = key or "prompt-" + utils.short_hash(input)
         self.input = input
         self.response = None
         self.response_text = None
@@ -85,7 +85,6 @@ class SimplePrompt(BasePrompt):
             d.update(
                 {
                     "test_results_avg": self.test_results_avg,
-                    "test_results": self.test_results,
                 }
             )
         return d
@@ -93,12 +92,7 @@ class SimplePrompt(BasePrompt):
     def print(self, verbose=False, style="yaml"):
         style = style or "yaml"
         output = self._serialize_for_print(verbose)
-        highlighted = None
-        if style == "yaml":
-            highlighted = utils.to_yaml(data)
-        elif style == "json":
-            highlighted = utils.to_json(data)
-        print("-" * 80)
+        highlighted = utils.serialize_object(output, style)
         print(highlighted)
 
     def _generate_prompt(self):
@@ -112,7 +106,9 @@ class SimplePrompt(BasePrompt):
         self.raw_response_text = self.response.choices[0].text
         self.response_text = self.raw_response_text.strip("\n")
         if self.response_is_json:
-            self.response_json = utils.try_to_json_parse(self.response.choices[0].text)
+            d = utils.extract_json(self.response.choices[0].text)
+            if d:
+                self.response_json = d
         self.has_run = True
 
 
