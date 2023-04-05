@@ -64,16 +64,9 @@ class SqlUseCase(TemplatedUseCase):
             population_total INT,
         );
 
-    please answer the following question with SQL:
-      * uses lowercase characters for reserve words
-      * uses 2 indents, no tabs!
-
     So, can you write a SQL query for {{ dialect }} that answers this user prompt:
     {{ user_input }}
     """
-
-    def get_extra_template_context(self):
-        return {"table_schemas": self.get_table_schemas()}
 
 another_list = [
     TemplatedUseCase(

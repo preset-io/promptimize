@@ -2,6 +2,10 @@ import json
 import yaml
 
 
+def is_numeric(value):
+    return isinstance(value, (int, float, complex))
+
+
 def is_iterable(obj):
     try:
         iter(obj)
@@ -20,6 +24,8 @@ def custom_scalar_representer(dumper, data):
     if "\n" in data:
         style = ">"
     return dumper.represent_scalar("tag:yaml.org,2002:str", data, style)
+
+
 yaml.add_representer(str, custom_scalar_representer, Dumper=CustomDumper)
 
 
@@ -28,10 +34,5 @@ def try_to_json_parse(s):
     try:
         obj = json.loads(s)
     except Exception as e:
-        print('o'*80)
-        print(s)
-        print('o'*80)
-        print(e)
-        print('o'*80)
+        raise Exception("Not JSON")
     return obj
-

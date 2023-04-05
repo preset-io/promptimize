@@ -7,11 +7,11 @@ from promptimize.suite import Suite
 from promptimize.crawler import discover_objects
 
 
-@click.command
-@click.option(
-    "--path",
+@click.command(help="The `promptimize` CLI. `p9e` works too! ")
+@click.argument(
+    "path",
     required=True,
-    help="The folder containing Python code with UseCase instances.",
+    type=click.Path(exists=True),
 )
 @click.option("--verbose", "-v", is_flag=True, help="Trigger more verbose output")
 @click.option(

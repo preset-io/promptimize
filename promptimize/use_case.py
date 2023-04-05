@@ -26,6 +26,7 @@ class BaseUseCase:
 
 class SimpleUseCase(BaseUseCase):
     """A generic class where each instance represents a specific use case"""
+
     response_is_json = False
 
     def __init__(self, user_input, validators=None):
@@ -43,9 +44,15 @@ class SimpleUseCase(BaseUseCase):
             self.validators = [self.validators]
 
     def test(self):
+        test_results = []
         for validator in self.validators:
-            self.test_results = validator(self.response_text)
+            result = validator(self.response_text)
+            if not (utils.is_numeric(result) and 0 <= result <= 1):
+                raise Exception("Value should be between 0 and 1")
+            test_results.append(result)
 
+        self.test_results = test_results
+        self.test_results_avg = sum(self.test_results) / len(self.test_results)
         self.was_tested = True
 
     def _serialize_for_print(self, verbose=False):
@@ -53,23 +60,31 @@ class SimpleUseCase(BaseUseCase):
             "user_input": self.user_input,
         }
         if self.response_json:
-            d.update({
-                "response_json": self.response_json,
-            })
+            d.update(
+                {
+                    "response_json": self.response_json,
+                }
+            )
         else:
-            d.update({
-                "response_text": self.response_text,
-            })
+            d.update(
+                {
+                    "response_text": self.response_text,
+                }
+            )
 
         if verbose:
-            d.update({
-                "response": self.response,
-                "prompt": self.prompt,
-            })
+            d.update(
+                {
+                    "response": self.response,
+                    "prompt": self.prompt,
+                }
+            )
         if self.was_tested:
-            d.update({
-                "test_results": self.test_results,
-            })
+            d.update(
+                {
+                    "test_results": self.test_results,
+                }
+            )
         return d
 
     def print(self, verbose=False, style="yaml"):
@@ -77,9 +92,8 @@ class SimpleUseCase(BaseUseCase):
         output = self._serialize_for_print(verbose)
         highlighted = None
         if style == "yaml":
-            data = yaml.dump(output, Dumper=utils.CustomDumper)
+            data = yaml.dump(output, Dumper=utils.CustomDumper, sort_keys=False)
             highlighted = highlight(data, YamlLexer(), TerminalFormatter())
-            highlighted = data
         elif style == "json":
             data = json.dumps(output, indent=2)
             highlighted = highlight(data, JsonLexer(), TerminalFormatter())
@@ -100,12 +114,12 @@ class SimpleUseCase(BaseUseCase):
 
 ##########################################################################
 class JsonUseCase(SimpleUseCase):
-
     def _generate_prompt(self):
-        return json.dumps({
-            "user_input": self.user_input,
-        })
-
+        return json.dumps(
+            {
+                "user_input": self.user_input,
+            }
+        )
 
 
 class TemplatedUseCase(SimpleUseCase):
@@ -133,5 +147,3 @@ class TemplatedUseCase(SimpleUseCase):
 
     def _generate_prompt(self, **kwargs):
         return self._process_template()
-
-
