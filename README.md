@@ -29,7 +29,8 @@ functions in python quickly, this allows you to iterate quickly.
 ```bash
 # in dev mode
 git clone git@github.com:preset-io/promptimize.git
-pip -e .
+cd promptimize
+pip install -e .
 ```
 
 ## Getting started
