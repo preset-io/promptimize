@@ -4,16 +4,16 @@ from promptimize import utils
 class Suite:
     """a collection of use cases to be tested"""
 
-    def __init__(self, prompts, model_id="text-davinci-003", max_tokens=1000):
+    def __init__(self, prompts, completion_create_kwargs=None):
+        self.completion_create_kwargs = completion_create_kwargs or {}
         self.prompts = {o.key: o for o in prompts}
-        self.model_id = model_id
-        self.max_tokens = max_tokens
 
-    def execute(self, verbose=False, style="yaml", model_id=None, max_tokens=None):
-        model_id = model_id or self.model_id
-        max_tokens = max_tokens or self.max_tokens
+    def execute(self, verbose=False, style="yaml", completion_create_kwargs=None):
+        completion_create_kwargs = (
+            completion_create_kwargs or self.completion_create_kwargs
+        )
         for prompt in self.prompts.values():
-            prompt.run(model_id=model_id, max_tokens=max_tokens)
+            prompt.run(completion_create_kwargs)
             prompt.test()
             prompt.print(verbose=verbose, style=style)
             print("#" + "-" * 40)

@@ -98,11 +98,9 @@ class SimplePrompt(BasePrompt):
     def _generate_prompt(self):
         return self.input
 
-    def run(self, model_id="text-davinci-003", max_tokens=1000):
+    def run(self, completion_create_kwargs):
         self.prompt = self._generate_prompt()
-        self.response = execute_prompt(
-            self.prompt, model_id=model_id, max_tokens=max_tokens
-        )
+        self.response = execute_prompt(self.prompt, completion_create_kwargs)
         self.raw_response_text = self.response.choices[0].text
         self.response_text = self.raw_response_text.strip("\n")
         if self.response_is_json:

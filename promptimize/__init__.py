@@ -22,12 +22,32 @@ from promptimize.crawler import discover_objects
     help="json or yaml formatting",
 )
 @click.option(
-    "--max-tokens", "-t", type=click.INT, help="max_tokens passed to the model"
+    "--max-tokens",
+    "-m",
+    type=click.INT,
+    default=1000,
+    help="max_tokens passed to the model",
 )
 @click.option(
-    "--model-id", "-m", type=click.STRING, help="model_id as accepted by the openai API"
+    "--temperature",
+    "-t",
+    type=click.FLOAT,
+    default=0.5,
+    help="max_tokens passed to the model",
 )
-def cli(path, verbose, style, max_tokens, model_id):
+@click.option(
+    "--engine",
+    "-e",
+    type=click.STRING,
+    default="text-davinci-003",
+    help="model as accepted by the openai API",
+)
+def cli(path, verbose, style, temperature, max_tokens, engine):
     uses_cases = discover_objects(path, BasePrompt)
-    suite = Suite(uses_cases)
+    completion_create_kwargs = {
+        "engine": engine,
+        "max_tokens": max_tokens,
+        "temperature": temperature,
+    }
+    suite = Suite(uses_cases, completion_create_kwargs)
     suite.execute(verbose=verbose, style=style)
