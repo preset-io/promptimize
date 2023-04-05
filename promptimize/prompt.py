@@ -1,10 +1,4 @@
 from textwrap import dedent
-import json
-
-import yaml
-from pygments import highlight
-from pygments.lexers import YamlLexer, JsonLexer
-from pygments.formatters import TerminalFormatter
 
 from promptimize.openai_api import execute_prompt
 from promptimize import utils
@@ -29,9 +23,9 @@ class SimplePrompt(BasePrompt):
 
     response_is_json = False
 
-    def __init__(self, user_input, evaluators=None, key=None):
-        self.key = key or utils.short_hash(user_input)
-        self.user_input = user_input
+    def __init__(self, input, evaluators=None, key=None):
+        self.key = key or utils.short_hash(input)
+        self.input = input
         self.response = None
         self.response_text = None
         self.response_json = None
@@ -59,7 +53,7 @@ class SimplePrompt(BasePrompt):
     def _serialize_for_print(self, verbose=False):
         d = {
             "key": self.key,
-            "user_input": self.user_input,
+            "input": self.input,
         }
         if self.response_json:
             d.update(
@@ -95,22 +89,22 @@ class SimplePrompt(BasePrompt):
         output = self._serialize_for_print(verbose)
         highlighted = None
         if style == "yaml":
-            data = yaml.dump(output, sort_keys=False)
-            highlighted = highlight(data, YamlLexer(), TerminalFormatter())
+            highlighted = utils.to_yaml(data)
         elif style == "json":
-            data = json.dumps(output, indent=2)
-            highlighted = highlight(data, JsonLexer(), TerminalFormatter())
+            highlighted = utils.to_json(data)
         print("-" * 80)
         print(highlighted)
 
     def _generate_prompt(self):
-        return self.user_input
+        return self.input
 
     def run(self, model_id="text-davinci-003", max_tokens=1000):
         self.prompt = self._generate_prompt()
-        self.response = execute_prompt(self.prompt, model_id=model_id, max_tokens=max_tokens)
+        self.response = execute_prompt(
+            self.prompt, model_id=model_id, max_tokens=max_tokens
+        )
         self.raw_response_text = self.response.choices[0].text
-        self.response_text = self.raw_response_text.strip('\n')
+        self.response_text = self.raw_response_text.strip("\n")
         if self.response_is_json:
             self.response_json = utils.try_to_json_parse(self.response.choices[0].text)
         self.has_run = True
@@ -118,11 +112,11 @@ class SimplePrompt(BasePrompt):
 
 class TemplatedPrompt(SimplePrompt):
     template_defaults = {}
-    prompt_template = "{{ user_input }}"
+    prompt_template = "{{ input }}"
 
-    def __init__(self, user_input, evaluators=None, **template_kwargs):
+    def __init__(self, input, evaluators=None, **template_kwargs):
         self.template_kwargs = template_kwargs
-        return super().__init__(user_input)
+        return super().__init__(input)
 
     def get_extra_template_context(self):
         return {}
@@ -136,7 +130,7 @@ class TemplatedPrompt(SimplePrompt):
         context_kwargs.update(self.get_extra_template_context())
         context_kwargs.update(self.template_kwargs)
         return process_template(
-            self.prompt_template, user_input=self.user_input, **context_kwargs
+            self.prompt_template, input=self.input, **context_kwargs
         )
 
     def _generate_prompt(self, **kwargs):

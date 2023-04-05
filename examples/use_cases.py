@@ -3,9 +3,11 @@ from textwrap import dedent
 from promptimize.prompt import SimplePrompt, TemplatedPrompt
 from promptimize.suite import Suite
 
+
 class SqlPrompt(TemplatedPrompt):
     template_defaults = {"dialect": "BigQuery"}
-    prompt_template = dedent("""\
+    prompt_template = dedent(
+        """\
     given these SQL table schemas:
     ```
         {{ table_schemas }}
@@ -14,7 +16,7 @@ class SqlPrompt(TemplatedPrompt):
       * uses lowercase characters for reserve words
       * uses 2 indents, no tabs!
     So, can you write a SQL query for {{ dialect }} that answers this user prompt:
-    {{ user_input }}
+    {{ input }}
     """
     )
 
@@ -31,11 +33,13 @@ class SqlPrompt(TemplatedPrompt):
     def get_extra_template_context(self):
         return {"table_schemas": self.get_table_schemas()}
 
+
 class SqlPrompt2(SqlPrompt):
     response_is_json = True
-    prompt_template = dedent("""\
+    prompt_template = dedent(
+        """\
     using SQL code, answer the following user question:
-    {{user_input}}
+    {{input}}
 
 
     here's some information about the database schema:
@@ -57,16 +61,18 @@ class SqlPrompt2(SqlPrompt):
         "sql": the SQL you generated,
         "hints": some hints as to how to improve the user prompt for better results
 
-    """)
+    """
+    )
     pass
+
 
 uses_cases = [
     SimplePrompt("hello there!", lambda x: "hi" in x.lower()),
-    #SqlPrompt("can you tell me the current population of each country?", lambda x: 'SELECT' in x),
-    #SqlPrompt("which country have the fastest growth rate over the past 10 years?"),
-    #SqlPrompt(
+    # SqlPrompt("can you tell me the current population of each country?", lambda x: 'SELECT' in x),
+    # SqlPrompt("which country have the fastest growth rate over the past 10 years?"),
+    # SqlPrompt(
     #    "which country have the fastest growth rate over the most recent 10 years of available data?"
-    #),
+    # ),
     SqlPrompt2(
         "give me the top 10 countries with the highest net increase of population over the past 25 years?"
     ),

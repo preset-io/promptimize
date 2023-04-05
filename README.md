@@ -51,9 +51,11 @@ uses_cases = [
 
     # making sure zappa is in the list of top 50 guitar players!
     SimplePrompt("who are the top 50 best guitar players of all time?", lambda x: "zappa" in x.lower()),
+
+    SimplePrompt("who is Maxime Beauchemin?", lambda x: 0.5 if "superset in x.lower()" else 0 +  0.5 if "airflow in x.lower()")
 ]
 
-# deriving TemplatedPrompt to do some sql stuff
+# deriving TemplatedPrompt to get GPT to generate some SQL
 class SqlPrompt(TemplatedPrompt):
     template_defaults = {"dialect": "Postgres"}
     prompt_template = """\
@@ -65,7 +67,7 @@ class SqlPrompt(TemplatedPrompt):
         );
 
     So, can you write a SQL query for {{ dialect }} that answers this user prompt:
-    {{ user_input }}
+    {{ input }}
     """
 
 another_list = [

@@ -13,3 +13,10 @@ class Suite:
             prompt.run(model_id=model_id, max_tokens=max_tokens)
             prompt.test()
             prompt.print(verbose=verbose, style=style)
+        print(self._serialize_run_summary())
+
+    def _serialize_run_summary(self, verbose=False):
+        prompts = self.prompts.values()
+        suite_score = sum([p.self.test_results_avg for p in prompts]) / len(prompts)
+        d = {"suite_score": suite_score}
+        return d
