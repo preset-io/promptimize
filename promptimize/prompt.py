@@ -1,4 +1,5 @@
 from textwrap import dedent
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from promptimize.openai_api import execute_prompt
 from promptimize import utils
@@ -21,9 +22,14 @@ class BasePrompt:
 class SimplePrompt(BasePrompt):
     """A generic class where each instance represents a specific use case"""
 
-    response_is_json = False
+    response_is_json: bool = False
 
-    def __init__(self, input, evaluators=None, key=None):
+    def __init__(
+        self,
+        input: str,
+        evaluators: Optional[Union[Callable, List[Callable]]] = None,
+        key: Optional[str] = None,
+    ) -> None:
         self.key = key or utils.short_hash(input)
         self.input = input
         self.response = None
@@ -33,10 +39,10 @@ class SimplePrompt(BasePrompt):
         self.has_run = False
         self.was_tested = False
         self.test_results = None
-
         self.evaluators = evaluators or []
+
         if not utils.is_iterable(self.evaluators):
-            self.evaluators = [self.evaluators]
+            self.evaluators = [self.evaluators]  # type: ignore
 
     def test(self):
         test_results = []
@@ -111,7 +117,7 @@ class SimplePrompt(BasePrompt):
 
 
 class TemplatedPrompt(SimplePrompt):
-    template_defaults = {}
+    template_defaults: dict = {}
     prompt_template = "{{ input }}"
 
     def __init__(self, input, evaluators=None, **template_kwargs):

@@ -10,7 +10,10 @@ All functions here are expected to:
 
 from typing import List
 
-def percentage_of_words(response: str, words: List[str], case_sensitive: bool = False) -> float:
+
+def percentage_of_words(
+    response: str, words: List[str], case_sensitive: bool = False
+) -> float:
     """
     Calculate the percentage of words from a list that are present in the given response.
 
@@ -38,6 +41,7 @@ def percentage_of_words(response: str, words: List[str], case_sensitive: bool = 
         words = [w.lower() for w in words]
 
     return sum(1 if w in response else 0 for w in words) / len(words)
+
 
 def any_word(response: str, words: List[str], case_sensitive: bool = False) -> int:
     """

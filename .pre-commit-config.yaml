@@ -20,10 +20,6 @@ repos:
     hooks:
       - id: mypy
         additional_dependencies: [types-all]
-  - repo: https://github.com/peterdemin/pip-compile-multi
-    rev: v2.4.1
-    hooks:
-      - id: pip-compile-multi-verify
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
     hooks:
@@ -53,8 +49,3 @@ repos:
     hooks:
       - id: blacklist
         args: ["--blacklisted-names=make_url", "--ignore=tests/"]
-  - repo: https://github.com/norwoodj/helm-docs
-    rev: v1.11.0
-    hooks:
-      - id: helm-docs
-        files: helm
