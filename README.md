@@ -4,12 +4,15 @@
 **Promptimize** is a framework that accelerates prompt engineering,
 crafting, and evaluation.
 
-Use `promptimize` to define your prompts as code, tie them to evaluation functions,
-generate prompt variations dynamically, execute and rank across different
-engines, and get reporting on how your prompts perform.
+Use `promptimize` to
+- define your prompts as code and tie them to evaluation functions
+- generate prompt variations dynamically
+- execute and rank across different engines
+- get reporting on how your prompts perform
 
-Promptimize offers a programmatic way to define and tune your prompt and evaluation
-functions in Python in a way that allows you to iterate quickly and confidently.
+In short, `promptimize` offers a programmatic way to define and tune
+your prompt and evaluation functions in Python in a way that allows
+you to iterate quickly and confidently.
 
 ## Hello world - the simplest prompt examples
 [code](https://github.com/preset-io/promptimize/tree/master/examples)
@@ -205,6 +208,21 @@ p9e ./examples --verbose
 
 Now take a look at the definitions of what you just ran here ->
 [Promptimize examples on GitHub](https://github.com/preset-io/promptimize/tree/master/examples)
+
+## The CLI
+```bash
+$ promptimize --help
+Usage: promptimize [OPTIONS] PATH
+
+
+Options:
+  -v, --verbose             Trigger more verbose output
+  -s, --style [json|yaml]   json or yaml formatting
+  -m, --max-tokens INTEGER  max_tokens passed to the model
+  -t, --temperature FLOAT   max_tokens passed to the model
+  -e, --engine TEXT         model as accepted by the openai API
+  --help                    Show this message and exit.
+```
 
 ## Resources
 * [GPT interactive playground](https://platform.openai.com/playground/p/default-adv-tweet-classifier)

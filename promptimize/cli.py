@@ -7,7 +7,7 @@ from promptimize.suite import Suite
 from promptimize.crawler import discover_objects
 
 
-@click.command(help="The `promptimize` CLI. `p9e` works too! ")
+@click.command(help="💡¡promptimize!💡 CLI. `p9e` works too! ")
 @click.argument(
     "path",
     required=True,
