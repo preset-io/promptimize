@@ -1,3 +1,4 @@
+# 💡 ¡promptimize! 💡
 <img src="https://user-images.githubusercontent.com/487433/229948453-36cbc2d1-e71f-4e87-9111-ab428bc96f4c.png" width=300/>
 
 **Promptimize** is a framework that accelerates prompt engineering,
@@ -9,6 +10,63 @@ engines, and get reporting on how your prompts perform.
 
 Promptimize offers a programmatic way to define and tune your prompt and evaluation
 functions in Python in a way that allows you to iterate quickly and confidently.
+
+## Hello world
+```python
+# Brining some "prompt generator" classes - note that you can derive and extend those
+from promptimize.prompt import SimplePrompt
+
+# Bringing some useful eval function that help evaluating and scoring responses
+# eval functions have a handle on the prompt object and are expected
+# to return a score between 0 and 1
+from promptimize import evals
+
+# Promptimize will scan the target folder and find all Prompt objects
+# and derivatives that are in the python modules
+simple_prompts = [
+
+    # Prompting "hello there" and making sure there's "hi" or "hello"
+    # somewhere in the answer
+    SimplePrompt("hello there!", lambda x: evals.any_word(x, ["hi", "hello"])),
+    SimplePrompt(
+        "name the top 50 guitar players!", lambda x: evals.all_words(x, ["frank zappa"])
+    ),
+]
+```
+
+```bash
+$ promptimize examples/readme_hello_world.py
+💡 ¡promptimize! 💡
+# ----------------------------------------
+# Prompt prompt-c6950959
+# ----------------------------------------
+key: prompt-c6950959
+input: hello there!
+response_text: Hi there! How are you?
+test_results_avg: 1.0
+
+# ----------------------------------------
+# Prompt prompt-7bfe4487
+# ----------------------------------------
+key: prompt-7bfe4487
+input: name the top 50 guitar players!
+response_text: |-
+  1. Jimi Hendrix
+  2. Eric Clapton
+  3. Jimmy Page
+  {...}
+  50. Jerry Garcia
+test_results_avg: 0.0
+
+# ----------------------------------------
+# Suite summary
+# ----------------------------------------
+suite_score: 0.5
+completion_create_kwargs:
+  engine: text-davinci-003
+  max_tokens: 1000
+  temperature: 0.5
+```
 
 ## Problem + POV
 
@@ -149,10 +207,11 @@ Now take a look at the definitions of what you just ran here ->
 ## Resources
 * [GPT interactive playground](https://platform.openai.com/playground/p/default-adv-tweet-classifier)
 
-## TODO
-* allow to actually run the SQL
-* do assertions on result sets
-* parameterize your run, pick your engine, temperatur
-* bring in the system message
-* parallel execution
-* pypi
+## Disclaimer
+
+This project is pretty much at `0.1.0` and the creator is a busy man
+(running www.preset.io), and actually extending and using this framework
+to work on bringing AI to BI. Contributions, contributors and maintainers
+are more than welcomed! Looking forward to engage directly with all
+contributors! To get involved, open an GitHub issue detailing how you'd
+like to get involved, or just open a PR!

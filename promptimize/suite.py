@@ -1,5 +1,11 @@
 from promptimize import utils
 
+import click
+
+
+def separator():
+    click.secho("# " + "-" * 40, fg="cyan")
+
 
 class Suite:
     """a collection of use cases to be tested"""
@@ -14,12 +20,18 @@ class Suite:
             completion_create_kwargs or self.completion_create_kwargs
         )
         for prompt in self.prompts.values():
+            separator()
+            click.secho(f"# Prompt {prompt.key}", fg="cyan")
+            separator()
             prompt.run(completion_create_kwargs)
             prompt.test()
             prompt.print(verbose=verbose, style=style)
-            print("#" + "-" * 40)
+
         self.last_run_completion_create_kwargs = completion_create_kwargs
-        print(utils.serialize_object(self._serialize_run_summary(), style))
+        separator()
+        click.secho("# Suite summary", fg="cyan")
+        separator()
+        click.echo(utils.serialize_object(self._serialize_run_summary(), style))
 
     def _serialize_run_summary(self, verbose=False):
         prompts = self.prompts.values()
