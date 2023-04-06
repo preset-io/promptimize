@@ -1,51 +1,57 @@
 <img src="https://user-images.githubusercontent.com/487433/229948453-36cbc2d1-e71f-4e87-9111-ab428bc96f4c.png" width=300/>
 
-**Promptimize** is a framework that accelerates prompt enginering,
-crafting and evaluation.
+**Promptimize** is a framework that accelerates prompt engineering,
+crafting, and evaluation.
 
-Use `promptimize` to define your prompts as code, tie them to eval functions,
+Use `promptimize` to define your prompts as code, tie them to evaluation functions,
 generate prompt variations dynamically, execute and rank across different
 engines, and get reporting on how your prompts perform.
 
-Promptimize offers a programmatic way to define and tune your prompt and eval
-functions in python quickly, this allows you to iterate quickly.
+Promptimize offers a programmatic way to define and tune your prompt and evaluation
+functions in Python in a way that allows you to iterate quickly and confidently.
 
 ## Problem + POV
 
-Millions of product builders are currently integrating into the product
-and experiences they are building. The probabilistic
-(often semi-random, sometimes hectic) nature of LLMs makes this a challenge.
+Millions of product builders are currently trying to figure out how to
+bring the power of AI into the products and experiences they are building.
+The probabilistic (often semi-random, sometimes hectic) nature of LLMs
+makes this a challenge.
+
 Prompt engineering is a huge piece of the puzzle in terms of how to do this
-right, especially given the complexity, risks and drawbacks around
+right, especially given the complexity, risks, and drawbacks around
 model tuning.
 
-We beliieve product builders need to tame AI through proper, rigorous
-prompt engineering. This allows making the probabilistic nature of
-AI more deterministic, or somewhat predicatable, and allows builder to apply
-hyperparameter tuning-type mindset and approach to prompt engineering. In short,
-Promptimize allows generating and testing prompts at industrial scale.
+We believe product builders need to tame AI through proper, rigorous
+**prompt engineering**. This allows making the probabilistic nature of
+AI more deterministic, or somewhat predictable, and allows builders to apply
+a hyperparameter tuning-type mindset and approach to prompt engineering.
 
-## Information architecture
-* **Prompt:** a Prompt instance is a certain test case, a single prompt
-  with an associated set of eval functions to rate it's success
-* **Eval:** an evaluation function that reads the response and returns
-  a success rate between `0` and `1`
-* **Suite:**: a Suite is a collection of Prompt, it's able to run things
-  accumulate results, and print reports about its collection of use cases
+In short, Promptimize allows you to generate and test prompts at industrial scale,
+so that you can confidently use them in the products you are building.
 
-## Princicples
-* **Configuration as code:** all use cases, suites and evals are defined as code,
-  this makes it easy to dynamically generate all sorts of use cases and suites
-* **Constant suggestion**: the framework is great at running your use cases
-  and evaluating them, but GPT engines are great at suggesting improvements
-  on each prompt too
+## Information Architecture
+
+- **Prompt:** A Prompt instance is a certain test case, a single prompt
+  with an associated set of evaluation functions to rate its success.
+- **Eval:** An evaluation function that reads the response and returns
+  a success rate between `0` and `1`.
+- **Suite:** A Suite is a collection of Prompt; it's able to run things,
+  accumulate results, and print reports about its collection of use cases.
+
+## Principles
+
+- **Configuration as code:** All use cases, suites, and evaluations are defined as code,
+  which makes it easy to dynamically generate all sorts of use cases and suites.
+- **Support the iteration mindset:** making it easy for people to try things,
+  get suggestions from the AI, adapt, compare, and push forward
+- **Extensibility:** the framework is designed to be extremely hackable and
+  extensible. Hooks, extensions, high API surface.
 
 ## Setup
+
+To install the Promptimize package, use the following command:
 ```bash
-# in dev mode
-git clone git@github.com:preset-io/promptimize.git
-cd promptimize
-pip install -e .
+pip install promptimize
 ```
 
 ## Getting started
@@ -54,8 +60,6 @@ First you'll need an openai API key, let's set it as an env var
 ```bash
 export OPENAI_API_KEY=sk-{REDACTED}
 ```
-
-## Example
 
 Find the examples bellow [here](https://github.com/preset-io/promptimize/blob/master/examples/readme_examples.py)
 
