@@ -10,6 +10,21 @@ engines, and get reporting on how your prompts perform.
 Promptimize offers a programmatic way to define and tune your prompt and eval
 functions in python quickly, this allows you to iterate quickly.
 
+## Problem + POV
+
+Millions of product builders are currently integrating into the product
+and experiences they are building. The probabilistic
+(often semi-random, sometimes hectic) nature of LLMs makes this a challenge.
+Prompt engineering is a huge piece of the puzzle in terms of how to do this
+right, especially given the complexity, risks and drawbacks around
+model tuning.
+
+We beliieve product builders need to tame AI through proper, rigorous
+prompt engineering. This allows making the probabilistic nature of
+AI more deterministic, or somewhat predicatable, and allows builder to apply
+hyperparameter tuning-type mindset and approach to prompt engineering. In short,
+Promptimize allows generating and testing prompts at industrial scale.
+
 ## Information architecture
 * **Prompt:** a Prompt instance is a certain test case, a single prompt
   with an associated set of eval functions to rate it's success
@@ -136,3 +151,4 @@ Now take a look at the definitions of what you just ran here ->
 * parameterize your run, pick your engine, temperatur
 * bring in the system message
 * parallel execution
+* pypi

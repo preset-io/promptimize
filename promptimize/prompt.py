@@ -18,6 +18,12 @@ class BasePrompt:
     def print(self):
         return NotImplementedError
 
+    def post_run(self):
+        return
+
+    def pre_run(self):
+        return
+
 
 class SimplePrompt(BasePrompt):
     """A generic class where each instance represents a specific use case"""
@@ -26,21 +32,12 @@ class SimplePrompt(BasePrompt):
 
     def __init__(
         self,
-        input: Optional[str] = None,  # raw input
+        input: str,  # raw input
         evaluators: Optional[Union[Callable, List[Callable]]] = None,
         key: Optional[str] = None,
-        system_input: Optional[str] = None,
-        user_input: Optional[str] = None,
     ) -> None:
-        if input is None and (system_input is None and user_input is None):
-            raise Exception("Gotta provide some input here friend")
-
         self.input = input
-        self.system_input = system_input
-        self.user_input = user_input
-        self.key = key or "prompt-" + utils.short_hash(
-            "||".join([str(s) for s in [input, system_input, user_input]])
-        )
+        self.key = key or "prompt-" + utils.short_hash(input)
 
         self.response = None
         self.response_text = None
@@ -50,6 +47,9 @@ class SimplePrompt(BasePrompt):
         self.was_tested = False
         self.test_results = None
         self.evaluators = evaluators or []
+
+        self.pre_run_output = None
+        self.post_run_output = None
 
         if not utils.is_iterable(self.evaluators):
             self.evaluators = [self.evaluators]  # type: ignore
@@ -99,6 +99,13 @@ class SimplePrompt(BasePrompt):
                     "test_results_avg": self.test_results_avg,
                 }
             )
+
+        if self.post_run_output:
+            d["post_run_output"] = self.post_run_output
+
+        if self.pre_run_output:
+            d["pre_run_output"] = self.pre_run_output
+
         return d
 
     def print(self, verbose=False, style="yaml"):
@@ -108,23 +115,10 @@ class SimplePrompt(BasePrompt):
         print(highlighted)
 
     def _generate_prompt(self):
-        prompt = None
-        # if the user provided user_input and system_input
-        if self.user_input:
-            return [
-                {
-                    "role": "user",
-                    "content": self.user_input,
-                },
-                {
-                    "role": "system",
-                    "content": self.system_input,
-                },
-            ]
-        # if not just passing the normal input
         return self.input
 
     def run(self, completion_create_kwargs):
+        self.pre_run_output = self.pre_run()
         self.prompt = self._generate_prompt()
         self.response = execute_prompt(self.prompt, completion_create_kwargs)
         self.raw_response_text = self.response.choices[0].text
@@ -133,6 +127,7 @@ class SimplePrompt(BasePrompt):
             d = utils.extract_json(self.response.choices[0].text)
             if d:
                 self.response_json = d
+        self.post_run_output = self.post_run()
         self.has_run = True
 
 
@@ -144,17 +139,13 @@ class TemplatedPrompt(SimplePrompt):
         input: Optional[str] = None,  # raw input
         evaluators: Optional[Union[Callable, List[Callable]]] = None,
         key: Optional[str] = None,
-        system_input: Optional[str] = None,
-        user_input: Optional[str] = None,
         **template_kwargs
     ) -> None:
         self.template_kwargs = template_kwargs
         return super().__init__(
-            input=input,
+            input=input,  # type: ignore
             evaluators=evaluators,
             key=key,
-            system_input=system_input,
-            user_input=user_input,
         )
 
     def get_extra_template_context(self):
@@ -169,6 +160,6 @@ class TemplatedPrompt(SimplePrompt):
         return context_kwargs
 
     def _generate_prompt(self, **kwargs):
-        prompt = super()._generate_prompt()
-        f = lambda x: process_template(x, input=self.input, **self.jinja_context)
-        return utils.transform_strings(prompt, f)
+        return process_template(
+            self.prompt_template, input=self.input, **self.jinja_context
+        )
