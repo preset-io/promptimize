@@ -130,3 +130,29 @@ def serialize_object(data, style="yaml", highlighted=True):
     if style == "yaml":
         return to_yaml(data, highlighted)
     return to_json(data, highlighted)
+
+
+def transform_strings(obj, transformation):
+    """
+    Recursively iterates through nested iterables (lists and tuples) and dictionaries,
+    applying a given transformation function to all strings found.
+
+    :param obj: The input object, which can be a string, dictionary, list, or tuple.
+                Other types will be returned unchanged.
+    :param transformation: A function that takes a single string argument and returns
+                           a transformed string.
+    :return: A new object with the same structure as the input object, but with all
+             strings transformed by the given transformation function.
+    """
+    if isinstance(obj, str):
+        return transformation(obj)
+    elif isinstance(obj, dict):
+        return {
+            key: transform_strings(value, transformation) for key, value in obj.items()
+        }
+    elif isinstance(obj, list):
+        return [transform_strings(item, transformation) for item in obj]
+    elif isinstance(obj, tuple):
+        return tuple(transform_strings(item, transformation) for item in obj)
+    else:
+        return obj

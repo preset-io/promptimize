@@ -41,12 +41,10 @@ export OPENAI_API_KEY=sk-{REDACTED}
 ```
 
 ## Example
-```python
-"""
-Some basic examples for promptimize.
 
-to run, simply execute `p9e ./examples/readme_examples.py`
-"""
+Find the examples bellow [here](https://github.com/preset-io/promptimize/blob/master/examples/readme_examples.py)
+
+```python
 # Brining some "prompt generator" classes
 from promptimize.prompt import SimplePrompt, TemplatedPrompt
 
@@ -79,9 +77,16 @@ simple_prompts = [
 ]
 
 # deriving TemplatedPrompt to generate prompts that ask GPT to generate SQL
-# based on table schemas
+# based on table schemas. The point here is you can derive the `Prompt`
+# class to create more specialized Prompt generators
+# For instance, the SqlPropt class defined bellow could be extended to fetch
+# schema definitions dynamically, acutally run the SQL, and allow
+# doing evals against the resultset.
+
 class SqlPrompt(TemplatedPrompt):
+    # the TemplatedPrompt expects a dict of defaults that can be overriden in the constructor
     template_defaults = {"dialect": "Postgres"}
+    # The actual Jinja2 template
     prompt_template = """\
     given these SQL table schemas:
         CREATE TABLE world_population (
@@ -97,8 +102,11 @@ class SqlPrompt(TemplatedPrompt):
 # Generating a few SQL prompts
 sql_prompts = [
     SqlPrompt(
+        # the user input that'll be added in place of {{ input }} in the template above
         "give me the top 10 countries with the highest net increase of population over the past 25 years?",
+        # the dialect template parameter, overriding the default set above
         dialect="BigQuery",
+        # a simple validation function making sure the SQL starts with SELECT
         evaluators=[lambda x: x.trim().startswith("SELECT")],
     ),
 ]

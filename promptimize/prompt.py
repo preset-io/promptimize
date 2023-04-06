@@ -26,12 +26,22 @@ class SimplePrompt(BasePrompt):
 
     def __init__(
         self,
-        input: str,
+        input: Optional[str] = None,  # raw input
         evaluators: Optional[Union[Callable, List[Callable]]] = None,
         key: Optional[str] = None,
+        system_input: Optional[str] = None,
+        user_input: Optional[str] = None,
     ) -> None:
-        self.key = key or "prompt-" + utils.short_hash(input)
+        if input is None and (system_input is None and user_input is None):
+            raise Exception("Gotta provide some input here friend")
+
         self.input = input
+        self.system_input = system_input
+        self.user_input = user_input
+        self.key = key or "prompt-" + utils.short_hash(
+            "||".join([str(s) for s in [input, system_input, user_input]])
+        )
+
         self.response = None
         self.response_text = None
         self.response_json = None
@@ -53,7 +63,9 @@ class SimplePrompt(BasePrompt):
             test_results.append(result)
 
         self.test_results = test_results
-        self.test_results_avg = sum(self.test_results) / len(self.test_results)
+        self.test_results_avg = None
+        if len(self.test_results):
+            self.test_results_avg = sum(self.test_results) / len(self.test_results)
         self.was_tested = True
 
     def _serialize_for_print(self, verbose=False):
@@ -96,6 +108,20 @@ class SimplePrompt(BasePrompt):
         print(highlighted)
 
     def _generate_prompt(self):
+        prompt = None
+        # if the user provided user_input and system_input
+        if self.user_input:
+            return [
+                {
+                    "role": "user",
+                    "content": self.user_input,
+                },
+                {
+                    "role": "system",
+                    "content": self.system_input,
+                },
+            ]
+        # if not just passing the normal input
         return self.input
 
     def run(self, completion_create_kwargs):
@@ -112,26 +138,37 @@ class SimplePrompt(BasePrompt):
 
 class TemplatedPrompt(SimplePrompt):
     template_defaults: dict = {}
-    prompt_template = "{{ input }}"
 
-    def __init__(self, input, evaluators=None, **template_kwargs):
+    def __init__(
+        self,
+        input: Optional[str] = None,  # raw input
+        evaluators: Optional[Union[Callable, List[Callable]]] = None,
+        key: Optional[str] = None,
+        system_input: Optional[str] = None,
+        user_input: Optional[str] = None,
+        **template_kwargs
+    ) -> None:
         self.template_kwargs = template_kwargs
-        return super().__init__(input)
+        return super().__init__(
+            input=input,
+            evaluators=evaluators,
+            key=key,
+            system_input=system_input,
+            user_input=user_input,
+        )
 
     def get_extra_template_context(self):
+        """meant to be overriden in derived classes to add logic/context"""
         return {}
 
-    def test(self):
-        if self.response_text != "" and self.response_text is not None:
-            return True
-
-    def _process_template(self):
+    @property
+    def jinja_context(self):
         context_kwargs = self.template_defaults.copy()
         context_kwargs.update(self.get_extra_template_context())
         context_kwargs.update(self.template_kwargs)
-        return process_template(
-            self.prompt_template, input=self.input, **context_kwargs
-        )
+        return context_kwargs
 
     def _generate_prompt(self, **kwargs):
-        return self._process_template()
+        prompt = super()._generate_prompt()
+        f = lambda x: process_template(x, input=self.input, **self.jinja_context)
+        return utils.transform_strings(prompt, f)

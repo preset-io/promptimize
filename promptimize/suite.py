@@ -7,6 +7,7 @@ class Suite:
     def __init__(self, prompts, completion_create_kwargs=None):
         self.completion_create_kwargs = completion_create_kwargs or {}
         self.prompts = {o.key: o for o in prompts}
+        self.last_run_completion_create_kwargs = {}
 
     def execute(self, verbose=False, style="yaml", completion_create_kwargs=None):
         completion_create_kwargs = (
@@ -17,13 +18,18 @@ class Suite:
             prompt.test()
             prompt.print(verbose=verbose, style=style)
             print("#" + "-" * 40)
+        self.last_run_completion_create_kwargs = completion_create_kwargs
         print(utils.serialize_object(self._serialize_run_summary(), style))
 
     def _serialize_run_summary(self, verbose=False):
         prompts = self.prompts.values()
-        tested = [p for p in prompts if p.was_tested]
+        tested = [p for p in prompts if p.was_tested and p.test_results_avg is not None]
         suite_score = None
         if len(tested) > 0:
             suite_score = sum([p.test_results_avg for p in tested]) / len(tested)
-        d = {"suite_score": suite_score}
+        d = {
+            "suite_score": suite_score,
+            "completion_create_kwargs": self.last_run_completion_create_kwargs,
+        }
+
         return d

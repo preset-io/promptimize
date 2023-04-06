@@ -35,9 +35,17 @@ simple_prompts = [
 ]
 
 # deriving TemplatedPrompt to generate prompts that ask GPT to generate SQL
-# based on table schemas
+# based on table schemas. The point here is you can derive the `Prompt`
+# class to create more specialized Prompt generators
+# For instance, the SqlPropt class defined bellow could be extended to fetch
+# schema definitions dynamically, acutally run the SQL, and allow
+# doing evals against the resultset.
+
+
 class SqlPrompt(TemplatedPrompt):
+    # the TemplatedPrompt expects a dict of defaults that can be overriden in the constructor
     template_defaults = {"dialect": "Postgres"}
+    # The actual Jinja2 template
     prompt_template = """\
     given these SQL table schemas:
         CREATE TABLE world_population (
@@ -54,8 +62,13 @@ class SqlPrompt(TemplatedPrompt):
 # Generating a few SQL prompts
 sql_prompts = [
     SqlPrompt(
-        "give me the top 10 countries with the highest net increase of population over the past 25 years?",
+        # you can pass a unique key that can we used to reference a prompt
+        key="sql-top-10-inc",
+        # the user input that'll be added in place of {{ input }} in the template above
+        input="give me the top 10 countries with the highest net increase of population over the past 25 years?",
+        # the dialect template parameter, overriding the default set above
         dialect="BigQuery",
-        evaluators=[lambda x: x.trim().startswith("SELECT")],
+        # a simple validation function making sure the SQL starts with SELECT
+        evaluators=lambda x: 1 if x.strip().startswith("SELECT") else 0,
     ),
 ]
