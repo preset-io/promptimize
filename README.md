@@ -15,7 +15,7 @@ your prompt and evaluation functions in Python in a way that allows
 you to iterate quickly and confidently.
 
 ## Hello world - the simplest prompt examples
-[code](https://github.com/preset-io/promptimize/tree/master/examples)
+[more examples on GitHub](https://github.com/preset-io/promptimize/tree/master/examples)
 ```python
 # Brining some "prompt generator" classes - note that you can derive and extend those
 from promptimize.prompt import SimplePrompt
@@ -228,8 +228,12 @@ Options:
 * [GPT interactive playground](https://platform.openai.com/playground/p/default-adv-tweet-classifier)
 
 ## Context
+
+<img src="https://user-images.githubusercontent.com/487433/230508578-456a7040-1184-433a-a555-dceb7c28c32c.png" width="75" title="Max"/>
+
 Where is `promptimize` coming from!? I'm (Maxime Beauchemin) a startup
-founder at preset.io working on brining AI to BI, data exploration,
+founder at <a href="www.preset.io">Preset</a> working on brining AI to BI
+(data exploration,
 and visualization). At Preset, we use `promptimize` to generate
 complex SQL based on natural language, and to suggest charts to users. We
 derive the `SimpleQuery` class to make it fitted to our specific use
@@ -240,7 +244,8 @@ as the creator of
 
 ## Disclaimer
 
-This project is pretty much at `0.1.0` and the creator is a busy man
+"Publish early, publish often!" This project is pretty much at `0.1.0`
+and the creator is a busy man
 (running www.preset.io), and actually extending and using this framework
 to work on bringing AI to BI. Contributions, contributors and maintainers
 are more than welcomed! Looking forward to engage directly with all
