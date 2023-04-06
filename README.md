@@ -11,7 +11,8 @@ engines, and get reporting on how your prompts perform.
 Promptimize offers a programmatic way to define and tune your prompt and evaluation
 functions in Python in a way that allows you to iterate quickly and confidently.
 
-## Hello world
+## Hello world - the simplest prompt examples
+[code](https://github.com/preset-io/promptimize/tree/master/examples)
 ```python
 # Brining some "prompt generator" classes - note that you can derive and extend those
 from promptimize.prompt import SimplePrompt
@@ -34,6 +35,7 @@ simple_prompts = [
 ]
 ```
 
+### The CLI
 ```bash
 $ promptimize examples/readme_hello_world.py
 💡 ¡promptimize! 💡
@@ -70,7 +72,7 @@ completion_create_kwargs:
 
 ## Problem + POV
 
-Millions of product builders are currently trying to figure out how to
+Thousands of product builders are currently trying to figure out how to
 bring the power of AI into the products and experiences they are building.
 The probabilistic (often semi-random, sometimes hectic) nature of LLMs
 makes this a challenge.
@@ -206,6 +208,17 @@ Now take a look at the definitions of what you just ran here ->
 
 ## Resources
 * [GPT interactive playground](https://platform.openai.com/playground/p/default-adv-tweet-classifier)
+
+## Context
+Where is `promptimize` coming from!? I'm (Maxime Beauchemin) a startup
+founder at preset.io working on brining AI to BI, data exploration,
+and visualization). At Preset, we use `promptimize` to generate
+complex SQL based on natural language, and to suggest charts to users. We
+derive the `SimpleQuery` class to make it fitted to our specific use
+cases in our own prompt engineering repo. Not my first open source project
+as the creator of
+[Apache Superset](https://github.com/apache/superset/) and
+[Apache Airflow](https://github.com/apache/airflow/)
 
 ## Disclaimer
 
