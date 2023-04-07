@@ -48,7 +48,7 @@ class SimplePrompt(BasePrompt):
         self.was_tested = False
         self.test_results = None
         self.evaluators = evaluators or []
-        self.weight = weight
+        self.weight = weight or 1
 
         self.pre_run_output = None
         self.post_run_output = None
@@ -70,7 +70,7 @@ class SimplePrompt(BasePrompt):
             self.test_results_avg = sum(self.test_results) / len(self.test_results)
         self.was_tested = True
 
-    def _serialize_for_print(self, verbose=False):
+    def to_dict(self, verbose=False):
         d = {
             "key": self.key,
             "input": self.input,
@@ -118,7 +118,7 @@ class SimplePrompt(BasePrompt):
 
     def print(self, verbose=False, style="yaml"):
         style = style or "yaml"
-        output = self._serialize_for_print(verbose)
+        output = self.to_dict(verbose)
         highlighted = utils.serialize_object(output, style)
         print(highlighted)
 

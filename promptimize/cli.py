@@ -5,6 +5,7 @@ import click
 from promptimize.prompt import BasePrompt
 from promptimize.suite import Suite
 from promptimize.crawler import discover_objects
+from promptimize import utils
 
 
 @click.command(help="💡¡promptimize!💡 CLI. `p9e` works too! ")
@@ -42,7 +43,12 @@ from promptimize.crawler import discover_objects
     default="text-davinci-003",
     help="model as accepted by the openai API",
 )
-def cli(path, verbose, style, temperature, max_tokens, engine):
+@click.option(
+    "--output",
+    "-o",
+    type=click.Path(),
+)
+def cli(path, verbose, style, temperature, max_tokens, engine, output):
     click.secho("💡 ¡promptimize! 💡", fg="cyan")
     uses_cases = discover_objects(path, BasePrompt)
     completion_create_kwargs = {
@@ -52,3 +58,7 @@ def cli(path, verbose, style, temperature, max_tokens, engine):
     }
     suite = Suite(uses_cases, completion_create_kwargs)
     suite.execute(verbose=verbose, style=style)
+    if output:
+        with open(output, "w") as f:
+            print(f"Writing file output to {output}")
+            f.write(utils.serialize_object(suite.to_dict(), highlighted=False))

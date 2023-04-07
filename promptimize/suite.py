@@ -10,8 +10,9 @@ def separator():
 class Suite:
     """a collection of use cases to be tested"""
 
-    def __init__(self, prompts, completion_create_kwargs=None):
+    def __init__(self, prompts, completion_create_kwargs=None, name=None):
         self.completion_create_kwargs = completion_create_kwargs or {}
+        self.name = name
         self.prompts = {o.key: o for o in prompts}
         self.last_run_completion_create_kwargs = {}
 
@@ -46,3 +47,10 @@ class Suite:
         }
 
         return d
+
+    def to_dict(self):
+        return {
+            "completion_create_kwargs": self.completion_create_kwargs,
+            "name": self.name,
+            "prompts": {p.key: p.to_dict() for p in self.prompts.values()},
+        }
