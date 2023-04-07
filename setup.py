@@ -4,6 +4,10 @@ from setuptools import setup, find_packages
 with open("requirements.txt") as f:
     requirements = f.read().splitlines()
 
+# Read the contents of the README.md file
+with open("README.md", "r", encoding="utf-8") as f:
+    readme = f.read()
+
 setup(
     name="promptimize",
     version="0.1.0",
@@ -18,5 +22,7 @@ setup(
     },
     author="Maxime Beauchemin",
     author_email="maximebeauchemin@gmail.com",
-    description="A python framework to generate and evaluate prompts for GPT at scale",
+    description="A python toolkit to generate and evaluate prompts for GPT at scale",
+    long_description=readme,
+    long_description_content_type="text/markdown",
 )
