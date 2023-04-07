@@ -18,6 +18,8 @@ simple_prompts = [
     # somewhere in the answer
     SimplePrompt("hello there!", lambda x: evals.any_word(x, ["hi", "hello"])),
     SimplePrompt(
-        "name the top 50 guitar players!", lambda x: evals.all_words(x, ["frank zappa"])
+        "name the top 50 guitar players!",
+        lambda x: evals.all_words(x, ["frank zappa"]),
+        weight=2,
     ),
 ]

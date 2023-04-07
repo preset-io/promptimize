@@ -35,6 +35,7 @@ class SimplePrompt(BasePrompt):
         input: str,  # raw input
         evaluators: Optional[Union[Callable, List[Callable]]] = None,
         key: Optional[str] = None,
+        weight=1,
     ) -> None:
         self.input = input
         self.key = key or "prompt-" + utils.short_hash(input)
@@ -47,6 +48,7 @@ class SimplePrompt(BasePrompt):
         self.was_tested = False
         self.test_results = None
         self.evaluators = evaluators or []
+        self.weight = weight
 
         self.pre_run_output = None
         self.post_run_output = None
@@ -97,6 +99,12 @@ class SimplePrompt(BasePrompt):
             d.update(
                 {
                     "test_results_avg": self.test_results_avg,
+                }
+            )
+        if self.weight != 1:
+            d.update(
+                {
+                    "weight": self.weight,
                 }
             )
 
