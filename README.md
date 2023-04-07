@@ -1,7 +1,7 @@
 # 💡 ¡promptimize! 💡
 <img src="https://user-images.githubusercontent.com/487433/229948453-36cbc2d1-e71f-4e87-9111-ab428bc96f4c.png" width=300/>
 
-**Promptimize** is a framework that accelerates prompt engineering,
+**Promptimize** is a toolkit that accelerates prompt engineering,
 crafting, and evaluation.
 
 Use `promptimize` to
@@ -105,9 +105,12 @@ so that you can confidently use them in the products you are building.
 
 - **Configuration as code:** All use cases, suites, and evaluations are defined as code,
   which makes it easy to dynamically generate all sorts of use cases and suites.
+- **Expressive**: a clean DSL that's to-the-point -> user prompt + assertions.
+  the actually prompt creation logic lives in the derivative class of `Prompt`,
+  so that we can have clean, dense files that contain nice `Suite`s
 - **Support the iteration mindset:** making it easy for people to try things,
   get suggestions from the AI, adapt, compare, and push forward
-- **Extensibility:** the framework is designed to be extremely hackable and
+- **Extensibility:** the toolkit is designed to be extremely hackable and
   extensible. Hooks, extensions, high API surface.
 
 ## Setup
@@ -246,8 +249,15 @@ as the creator of
 
 "Publish early, publish often!" This project is pretty much at `0.1.0`
 and the creator is a busy man
-(running www.preset.io), and actually extending and using this framework
+(running www.preset.io), and actually extending and using this toolkit
 to work on bringing AI to BI. Contributions, contributors and maintainers
 are more than welcomed! Looking forward to engage directly with all
 contributors! To get involved, open an GitHub issue detailing how you'd
 like to get involved, or just open a PR!
+
+
+## TODO
+- weight
+- --silent
+- --ouput
+- SHA + DIRTY
