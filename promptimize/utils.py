@@ -1,5 +1,6 @@
 import json
 from typing import Dict, Any, Union, List
+import subprocess
 import hashlib
 import json
 import re
@@ -156,3 +157,22 @@ def transform_strings(obj, transformation):
         return tuple(transform_strings(item, transformation) for item in obj)
     else:
         return obj
+
+
+def get_git_info():
+    try:
+        sha = (
+            subprocess.check_output(["git", "rev-parse", "HEAD"])
+            .decode("utf-8")
+            .strip()
+        )
+        branch = (
+            subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"])
+            .decode("utf-8")
+            .strip()
+        )
+        dirty = subprocess.call(["git", "diff-index", "--quiet", "HEAD"]) != 0
+
+        return {"sha": sha, "branch": branch, "dirty": dirty}
+    except subprocess.CalledProcessError:
+        return None

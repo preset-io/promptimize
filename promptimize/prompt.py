@@ -36,6 +36,7 @@ class SimplePrompt(BasePrompt):
         evaluators: Optional[Union[Callable, List[Callable]]] = None,
         key: Optional[str] = None,
         weight=1,
+        category: str = None,  # used for info/reporting purposes only
     ) -> None:
         self.input = input
         self.key = key or "prompt-" + utils.short_hash(input)
@@ -49,6 +50,7 @@ class SimplePrompt(BasePrompt):
         self.test_results = None
         self.evaluators = evaluators or []
         self.weight = weight or 1
+        self.category = category
 
         self.pre_run_output = None
         self.post_run_output = None

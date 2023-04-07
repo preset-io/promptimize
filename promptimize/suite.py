@@ -49,6 +49,7 @@ class Suite:
         d = {
             "suite_score": suite_score,
             "completion_create_kwargs": self.last_run_completion_create_kwargs,
+            "git_info": utils.get_git_info(),
         }
 
         return d
@@ -58,4 +59,5 @@ class Suite:
             "completion_create_kwargs": self.completion_create_kwargs,
             "name": self.name,
             "prompts": {p.key: p.to_dict() for p in self.prompts.values()},
+            "run_summary": self._serialize_run_summary(),
         }
