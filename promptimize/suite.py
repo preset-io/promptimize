@@ -16,23 +16,28 @@ class Suite:
         self.prompts = {o.key: o for o in prompts}
         self.last_run_completion_create_kwargs = {}
 
-    def execute(self, verbose=False, style="yaml", completion_create_kwargs=None):
+    def execute(
+        self, verbose=False, style="yaml", completion_create_kwargs=None, silent=False
+    ):
         completion_create_kwargs = (
             completion_create_kwargs or self.completion_create_kwargs
         )
         for prompt in self.prompts.values():
-            separator()
-            click.secho(f"# Prompt {prompt.key}", fg="cyan")
-            separator()
+            if not silent:
+                separator()
+                click.secho(f"# Prompt {prompt.key}", fg="cyan")
+                separator()
             prompt.run(completion_create_kwargs)
             prompt.test()
-            prompt.print(verbose=verbose, style=style)
+            if not silent:
+                prompt.print(verbose=verbose, style=style)
 
         self.last_run_completion_create_kwargs = completion_create_kwargs
-        separator()
-        click.secho("# Suite summary", fg="cyan")
-        separator()
-        click.echo(utils.serialize_object(self._serialize_run_summary(), style))
+        if not silent:
+            separator()
+            click.secho("# Suite summary", fg="cyan")
+            separator()
+            click.echo(utils.serialize_object(self._serialize_run_summary(), style))
 
     def _serialize_run_summary(self, verbose=False):
         prompts = self.prompts.values()

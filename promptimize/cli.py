@@ -48,7 +48,8 @@ from promptimize import utils
     "-o",
     type=click.Path(),
 )
-def cli(path, verbose, style, temperature, max_tokens, engine, output):
+@click.option("--silent", "-s", is_flag=True)
+def cli(path, verbose, style, temperature, max_tokens, engine, output, silent):
     click.secho("💡 ¡promptimize! 💡", fg="cyan")
     uses_cases = discover_objects(path, BasePrompt)
     completion_create_kwargs = {
@@ -57,8 +58,8 @@ def cli(path, verbose, style, temperature, max_tokens, engine, output):
         "temperature": temperature,
     }
     suite = Suite(uses_cases, completion_create_kwargs)
-    suite.execute(verbose=verbose, style=style)
+    suite.execute(verbose=verbose, style=style, silent=silent)
     if output:
         with open(output, "w") as f:
-            print(f"Writing file output to {output}")
+            print(f"# Writing file output to {output}")
             f.write(utils.serialize_object(suite.to_dict(), highlighted=False))
