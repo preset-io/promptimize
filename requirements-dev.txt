@@ -2,3 +2,6 @@ pre-commit
 setuptools
 wheel
 twine
+sphinx
+sphinxcontrib-napoleon
+recommonmark

@@ -26,8 +26,6 @@ class BasePrompt:
 
 
 class SimplePrompt(BasePrompt):
-    """A generic class where each instance represents a specific use case"""
-
     response_is_json: bool = False
 
     def __init__(
@@ -38,6 +36,17 @@ class SimplePrompt(BasePrompt):
         weight=1,
         category: str = None,  # used for info/reporting purposes only
     ) -> None:
+        """
+        Initialize a SimplePrompt instance.
+
+        Args:
+            input (str): Raw input for the prompt.
+            evaluators (Optional[Union[Callable, List[Callable]]]): Optional callable or list of callables used for evaluation.
+            key (Optional[str]): Optional unique key for the prompt.
+            weight (int, optional): Optional weight for the prompt (default: 1).
+            category (Optional[str], optional): Optional category for the prompt (used for info/reporting purposes only).
+        """
+
         self.input = input
         self.key = key or "prompt-" + utils.short_hash(input)
 
