@@ -2,7 +2,7 @@ from textwrap import dedent
 
 import click
 
-from promptimize.prompt import BasePrompt
+from promptimize.prompts import BasePrompt
 from promptimize.suite import Suite
 from promptimize.crawler import discover_objects
 from promptimize import utils

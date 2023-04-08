@@ -18,7 +18,7 @@ you to iterate quickly and confidently.
 [more examples on GitHub](https://github.com/preset-io/promptimize/tree/master/examples)
 ```python
 # Brining some "prompt generator" classes - note that you can derive and extend those
-from promptimize.prompt import SimplePrompt
+from promptimize.prompts import SimplePrompt
 
 # Bringing some useful eval function that help evaluating and scoring responses
 # eval functions have a handle on the prompt object and are expected
@@ -131,7 +131,7 @@ Find the examples bellow [here](https://github.com/preset-io/promptimize/blob/ma
 
 ```python
 # Brining some "prompt generator" classes
-from promptimize.prompt import SimplePrompt, TemplatedPrompt
+from promptimize.prompts import SimplePrompt, TemplatedPrompt
 
 # Bringing some useful eval function that help evaluating and scoring responses
 # eval functions have a handle on the prompt object and are expected

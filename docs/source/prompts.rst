@@ -1,4 +1,5 @@
-# Prompts
+Prompts
+=======
 
 .. automodule:: promptimize.prompts
     :members:

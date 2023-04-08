@@ -4,7 +4,7 @@ Some basic examples for promptimize.
 to run, simply execute `p9e ./examples/readme_examples.py`
 """
 # Brining some "prompt generator" classes
-from promptimize.prompt import SimplePrompt, TemplatedPrompt
+from promptimize.prompts import SimplePrompt, TemplatedPrompt
 
 # Bringing some useful eval function that help evaluating and scoring responses
 # eval functions have a handle on the prompt object and are expected
@@ -17,10 +17,10 @@ simple_prompts = [
     # Prompting "hello there" and making sure there's "hi" or "hello"
     # somewhere in the answer
     SimplePrompt("hello there!", lambda x: evals.any_word(x, ["hi", "hello"])),
-    # Making sure 3 specific guitar players are in the top 50
+    # Making sure 3 specific guitar players are in the top 10
     # the score here is a percentage of the words found
     SimplePrompt(
-        "who are the top 50 best guitar players of all time?",
+        "who are the top 10 best guitar players of all time?",
         lambda x: evals.percentage_of_words(
             x, ["frank zappa", "david gilmore", "carlos santana"]
         ),
