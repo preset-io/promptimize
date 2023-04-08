@@ -113,22 +113,6 @@ so that you can confidently use them in the products you are building.
 - **Extensibility:** the toolkit is designed to be extremely hackable and
   extensible. Hooks, extensions, high API surface.
 
-## Features
-
-Listing out a few features you should know about that you can start using as your
-suites of prompts become larger / more complex
-
-* prompts can be assigned a `weight` (default 1) this enables you to define
-  which prompts are more important than others
-* prompts can be assigned a `category`, this can be used in the reporting
-* The `Prompt` class `pre_run` and `post_run` hooks if you want to do
-  post-processing for instance. An example of that would be if you do a prompt
-  that expects GPT to generate code, and you'd like actually say run that code
-  and test it. In our SQL implementation, we run the SQL against the database
-  for instance and get a pandas dataframe back, and allow doing assertions
-  on the dataframe itself
-
-
 ## Setup
 
 To install the Promptimize package, use the following command:

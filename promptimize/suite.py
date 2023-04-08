@@ -1,24 +1,63 @@
-from promptimize import utils
+"""
+This module provides a Suite class to manage and execute a collection of
+use cases (prompts) to be tested. It allows running the tests, displaying
+results, and serializing the summary of the suite.
+"""
 
+from typing import Any, Dict, List, Optional, Union
+from promptimize import utils
+from promptimize.prompts import BasePrompt
 import click
 
 
-def separator():
+def separator() -> None:
+    """Print a separator line."""
     click.secho("# " + "-" * 40, fg="cyan")
 
 
 class Suite:
-    """a collection of use cases to be tested"""
+    """A collection of use cases to be tested.
 
-    def __init__(self, prompts, completion_create_kwargs=None, name=None):
+    Attributes:
+        completion_create_kwargs (Dict[str, Any]): Keyword arguments for completion creation.
+        name (Optional[str]): The name of the suite.
+        prompts (Dict[str, Prompt]): Dictionary of prompts to be tested, keyed by the prompt key.
+        last_run_completion_create_kwargs (Dict[str, Any]): Keyword arguments used in the last run for completion creation.
+    """
+
+    def __init__(
+        self,
+        prompts: List["BasePrompt"],
+        completion_create_kwargs: Optional[Dict[str, Any]] = None,
+        name: Optional[str] = None,
+    ) -> None:
+        """
+        Args:
+            prompts (List[Prompt]): List of prompts to be tested.
+            completion_create_kwargs (Optional[Dict[str, Any]]): Keyword arguments for completion creation. Defaults to None.
+            name (Optional[str]): The name of the suite. Defaults to None.
+        """
         self.completion_create_kwargs = completion_create_kwargs or {}
         self.name = name
         self.prompts = {o.key: o for o in prompts}
-        self.last_run_completion_create_kwargs = {}
+        self.last_run_completion_create_kwargs: dict = {}
 
     def execute(
-        self, verbose=False, style="yaml", completion_create_kwargs=None, silent=False
-    ):
+        self,
+        verbose: bool = False,
+        style: str = "yaml",
+        completion_create_kwargs: Optional[Dict[str, Any]] = None,
+        silent: bool = False,
+    ) -> None:
+        """
+        Execute the suite with the given settings.
+
+        Args:
+            verbose (bool): If True, print verbose output. Defaults to False.
+            style (str): Output style for serialization. Defaults to "yaml".
+            completion_create_kwargs (Optional[Dict[str, Any]]): Keyword arguments for completion creation. Defaults to None.
+            silent (bool): If True, suppress output. Defaults to False.
+        """
         completion_create_kwargs = (
             completion_create_kwargs or self.completion_create_kwargs
         )
@@ -39,7 +78,18 @@ class Suite:
             separator()
             click.echo(utils.serialize_object(self._serialize_run_summary(), style))
 
-    def _serialize_run_summary(self, verbose=False):
+    def _serialize_run_summary(
+        self, verbose: bool = False
+    ) -> Dict[str, Union[Optional[float], Dict[str, Any]]]:
+        """
+        Serialize the run summary of the suite.
+
+        Args:
+            verbose (bool): If True, include verbose output. Defaults to False.
+
+        Returns:
+            Dict[str, Union[Optional[float], Dict[str, Any]]]: Serialized run summary of the suite.
+        """
         prompts = self.prompts.values()
         tested = [p for p in prompts if p.was_tested and p.test_results_avg is not None]
         suite_score = None
@@ -54,7 +104,13 @@ class Suite:
 
         return d
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
+        """
+        Convert the suite to a dictionary.
+
+        Returns:
+            Dict[str, Any]: Dictionary representation of the suite.
+        """
         return {
             "completion_create_kwargs": self.completion_create_kwargs,
             "name": self.name,

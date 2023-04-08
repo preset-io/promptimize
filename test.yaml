@@ -1,0 +1,34 @@
+completion_create_kwargs: &id001
+  engine: text-davinci-003
+  max_tokens: 1000
+  temperature: 0.5
+name: null
+prompts:
+  prompt-c6950959:
+    key: prompt-c6950959
+    input: hello there!
+    response_text: Hi there! How are you doing?
+    test_results_avg: 1.0
+  prompt-77b3f420:
+    key: prompt-77b3f420
+    input: name the top 10 guitar players!
+    response_text: |-
+      1. Jimi Hendrix
+      2. Eric Clapton
+      3. Jimmy Page
+      4. Slash
+      5. Eddie Van Halen
+      6. B.B. King
+      7. Steve Vai
+      8. Angus Young
+      9. David Gilmour
+      10. Joe Satriani
+    test_results_avg: 0.0
+    weight: 2
+run_summary:
+  suite_score: 0.3333333333333333
+  completion_create_kwargs: *id001
+  git_info:
+    sha: b55219c0673a25b49230cc3cc0fda9612d30d667
+    branch: master
+    dirty: true

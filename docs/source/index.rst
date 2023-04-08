@@ -1,4 +1,4 @@
-.. include:: ../../README.md
+.. include:: README.md
     :parser: markdown
 
 .. toctree::
@@ -6,3 +6,4 @@
    :caption: Content
 
    prompts
+   suite

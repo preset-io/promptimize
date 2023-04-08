@@ -9,25 +9,6 @@ from promptimize.simple_jinja import process_template
 class BasePrompt:
     """Abstract base class for a use case"""
 
-    def run(self):
-        return NotImplementedError
-
-    def test(self):
-        return NotImplementedError
-
-    def print(self):
-        return NotImplementedError
-
-    def post_run(self):
-        return
-
-    def pre_run(self):
-        return
-
-
-class SimplePrompt(BasePrompt):
-    response_is_json: bool = False
-
     def __init__(
         self,
         input: str,  # raw input
@@ -66,6 +47,25 @@ class SimplePrompt(BasePrompt):
 
         if not utils.is_iterable(self.evaluators):
             self.evaluators = [self.evaluators]  # type: ignore
+
+    def run(self):
+        return NotImplementedError
+
+    def test(self):
+        return NotImplementedError
+
+    def print(self):
+        return NotImplementedError
+
+    def post_run(self):
+        return
+
+    def pre_run(self):
+        return
+
+
+class SimplePrompt(BasePrompt):
+    response_is_json: bool = False
 
     def test(self):
         test_results = []
