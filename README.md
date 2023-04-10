@@ -1,18 +1,19 @@
 # 💡 ¡promptimize! 💡
 <img src="https://user-images.githubusercontent.com/487433/229948453-36cbc2d1-e71f-4e87-9111-ab428bc96f4c.png" width=300/>
 
-**Promptimize** is a toolkit that accelerates prompt engineering,
-crafting, and evaluation.
+Promptimize is a toolkit designed to accelerate prompt engineering, crafting,
+and evaluation.
 
-Use `promptimize` to
-- define your prompts as code and tie them to evaluation functions
-- generate prompt variations dynamically
-- execute and rank across different engines
-- get reporting on how your prompts perform
+With promptimize, you can:
 
-In short, `promptimize` offers a programmatic way to define and tune
-your prompt and evaluation functions in Python in a way that allows
-you to iterate quickly and confidently.
+- Define your prompts as code and associate them with evaluation functions
+- Generate prompt variations dynamically
+- Execute and rank prompts across different engines
+- Get reports on your prompts' performance
+
+In essence, promptimize provides a programmatic way to define and fine-tune
+your prompts and evaluation functions in Python, allowing you to iterate
+quickly and with confidence.
 
 ## Hello world - the simplest prompt examples
 [more examples on GitHub](https://github.com/preset-io/promptimize/tree/master/examples)
@@ -228,7 +229,7 @@ p9e ./examples --verbose
 Now take a look at the definitions of what you just ran here ->
 [Promptimize examples on GitHub](https://github.com/preset-io/promptimize/tree/master/examples)
 
-## The CLI
+## CLI usage
 ```bash
 $ promptimize --help
 Usage: promptimize [OPTIONS] PATH
@@ -261,19 +262,9 @@ as the creator of
 [Apache Superset](https://github.com/apache/superset/) and
 [Apache Airflow](https://github.com/apache/airflow/)
 
-## Disclaimer
 
-"Publish early, publish often!" This project is pretty much at `0.1.0`
-and the creator is a busy man
-(running www.preset.io), and actually extending and using this toolkit
-to work on bringing AI to BI. Contributions, contributors and maintainers
-are more than welcomed! Looking forward to engage directly with all
-contributors! To get involved, open an GitHub issue detailing how you'd
-like to get involved, or just open a PR!
+## Contribute
 
-
-## TODO
-- weight
-- --silent
-- --ouput
-- SHA + DIRTY
+This project is in its early stages (0.1.0), and contributions, contributors,
+and maintainers are highly encouraged. To get involved, open a GitHub issue
+or submit a pull request.

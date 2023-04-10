@@ -4,6 +4,8 @@ import subprocess
 import hashlib
 import json
 import re
+import time
+from contextlib import contextmanager
 
 from pygments import highlight
 from pygments.lexers import YamlLexer, JsonLexer
@@ -176,3 +178,16 @@ def get_git_info():
         return {"sha": sha, "branch": branch, "dirty": dirty}
     except subprocess.CalledProcessError:
         return None
+
+
+class MeasureDuration:
+    def __init__(self):
+        self.duration = None
+
+    def __enter__(self):
+        self.start_time = time.time()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        end_time = time.time()
+        self.duration = (end_time - self.start_time) * 1000

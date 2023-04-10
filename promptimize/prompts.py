@@ -125,6 +125,8 @@ class SimplePrompt(BasePrompt):
         if self.pre_run_output:
             d["pre_run_output"] = self.pre_run_output
 
+        d.update({"api_call_duration": self.api_call_duration})
+
         return d
 
     def print(self, verbose=False, style="yaml"):
@@ -140,7 +142,9 @@ class SimplePrompt(BasePrompt):
         self.pre_run_output = self.pre_run()
         answer = None
         self.prompt = self.render()
-        self.response = execute_prompt(self.prompt, completion_create_kwargs)
+        with utils.MeasureDuration() as md:
+            self.response = execute_prompt(self.prompt, completion_create_kwargs)
+        self.api_call_duration = md.duration
         self.raw_response_text = self.response.choices[0].text
         self.response_text = self.raw_response_text.strip("\n")
         answer = self.response_text
