@@ -133,21 +133,27 @@ class SimplePrompt(BasePrompt):
         highlighted = utils.serialize_object(output, style)
         print(highlighted)
 
-    def _generate_prompt(self):
+    def render(self):
         return self.input
 
     def run(self, completion_create_kwargs):
         self.pre_run_output = self.pre_run()
-        self.prompt = self._generate_prompt()
+        answer = None
+        self.prompt = self.render()
         self.response = execute_prompt(self.prompt, completion_create_kwargs)
         self.raw_response_text = self.response.choices[0].text
         self.response_text = self.raw_response_text.strip("\n")
+        answer = self.response_text
+
         if self.response_is_json:
             d = utils.extract_json(self.response.choices[0].text)
             if d:
                 self.response_json = d
+                answer = self.response_json
         self.post_run_output = self.post_run()
         self.has_run = True
+        self.answer = answer
+        return answer
 
 
 class TemplatedPrompt(SimplePrompt):
@@ -178,7 +184,7 @@ class TemplatedPrompt(SimplePrompt):
         context_kwargs.update(self.template_kwargs)
         return context_kwargs
 
-    def _generate_prompt(self, **kwargs):
+    def render(self, **kwargs):
         return process_template(
             self.prompt_template, input=self.input, **self.jinja_context
         )
