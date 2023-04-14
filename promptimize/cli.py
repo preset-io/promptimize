@@ -2,13 +2,18 @@ from textwrap import dedent
 
 import click
 
-from promptimize.prompts import BasePrompt
+from promptimize.prompt_cases import BasePromptCase
 from promptimize.suite import Suite
 from promptimize.crawler import discover_objects
 from promptimize import utils
 
 
-@click.command(help="💡¡promptimize!💡 CLI. `p9e` works too! ")
+@click.group(help="💡¡promptimize!💡 CLI. `p9e` works too!")
+def cli():
+    pass
+
+
+@click.command(help="run some prompts")
 @click.argument(
     "path",
     required=True,
@@ -49,9 +54,9 @@ from promptimize import utils
     type=click.Path(),
 )
 @click.option("--silent", "-s", is_flag=True)
-def cli(path, verbose, style, temperature, max_tokens, engine, output, silent):
+def run(path, verbose, style, temperature, max_tokens, engine, output, silent):
     click.secho("💡 ¡promptimize! 💡", fg="cyan")
-    uses_cases = discover_objects(path, BasePrompt)
+    uses_cases = discover_objects(path, BasePromptCase)
     completion_create_kwargs = {
         "engine": engine,
         "max_tokens": max_tokens,
@@ -63,3 +68,6 @@ def cli(path, verbose, style, temperature, max_tokens, engine, output, silent):
         with open(output, "w") as f:
             print(f"# Writing file output to {output}")
             f.write(utils.serialize_object(suite.to_dict(), highlighted=False))
+
+
+cli.add_command(run)

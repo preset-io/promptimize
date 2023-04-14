@@ -191,3 +191,68 @@ class MeasureDuration:
     def __exit__(self, exc_type, exc_val, exc_tb):
         end_time = time.time()
         self.duration = (end_time - self.start_time) * 1000
+
+
+from typing import Any, Dict, Optional, Union
+
+
+def insert_in_dict(
+    dictionary: Dict[Any, Any],
+    key: Any,
+    value: Any,
+    position: Optional[int] = None,
+    before_key: Optional[Any] = None,
+    after_key: Optional[Any] = None,
+) -> Dict[Any, Any]:
+    """
+    Insert a key/value pair in a dictionary at a specific position, before a specified key, or after a specified key.
+
+    Args:
+        dictionary (Dict[Any, Any]): The original dictionary.
+        key (Any): The key to be inserted.
+        value (Any): The value associated with the key.
+        position (Optional[int], optional): The position at which the key/value pair should be inserted. Defaults to None.
+        before_key (Optional[Any], optional): The key before which the new key/value pair should be inserted. Defaults to None.
+        after_key (Optional[Any], optional): The key after which the new key/value pair should be inserted. Defaults to None.
+
+    Raises:
+        ValueError: If more than one of 'position', 'before_key', or 'after_key' is specified.
+        ValueError: If the specified position is out of range.
+        KeyError: If 'before_key' or 'after_key' is not found in the dictionary.
+
+    Returns:
+        Dict[Any, Any]: A new dictionary with the inserted key/value pair.
+    """
+    if sum([bool(position is not None), bool(before_key), bool(after_key)]) > 1:
+        raise ValueError(
+            "Only one of 'position', 'before_key', or 'after_key' can be specified"
+        )
+
+    if position is not None and (position > len(dictionary) or position < 0):
+        raise ValueError("Position is out of range")
+
+    if before_key is not None and before_key not in dictionary:
+        raise KeyError(f"'before_key': {before_key} not found in the dictionary")
+
+    if after_key is not None and after_key not in dictionary:
+        raise KeyError(f"'after_key': {after_key} not found in the dictionary")
+
+    new_dict = {}
+    inserted = False
+
+    for index, (dict_key, dict_value) in enumerate(dictionary.items()):
+        if position == index or dict_key == before_key:
+            new_dict[key] = value
+            inserted = True
+        elif after_key == dict_key:
+            new_dict[dict_key] = dict_value
+            new_dict[key] = value
+            inserted = True
+            continue
+
+        new_dict[dict_key] = dict_value
+
+    if not inserted or position == len(dictionary):
+        new_dict[key] = value
+
+    return new_dict

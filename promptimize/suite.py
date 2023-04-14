@@ -6,7 +6,7 @@ results, and serializing the summary of the suite.
 
 from typing import Any, Dict, List, Optional, Union
 from promptimize import utils
-from promptimize.prompts import BasePrompt
+from promptimize.prompt_cases import BasePromptCase
 import click
 
 
@@ -27,7 +27,7 @@ class Suite:
 
     def __init__(
         self,
-        prompts: List["BasePrompt"],
+        prompts: List["BasePromptCase"],
         completion_create_kwargs: Optional[Dict[str, Any]] = None,
         name: Optional[str] = None,
     ) -> None:
