@@ -152,6 +152,18 @@ p9e ./examples
 p9e ./examples --verbose
 
 ```
+## Langchain?
+
+How does promptimize relate to `langchain`?
+
+We think langchain is amazing and promptimize uses langchain under the
+hood to interact with openai, and has integration with langchain
+(see `LangchainPromptCase`, and the upcoming `LangchainChainPromptCase`
+and `LangchainAgntPromptCase`)
+While you don't have to use
+langchain, and could use promptimize on top of any python prompt generation
+whether it'd be another library or some home grown thing.
+
 
 ## Context
 

@@ -1,13 +1,15 @@
+import os
 from textwrap import dedent
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from promptimize.openai_api import execute_prompt
+from langchain.llms import OpenAI
+
 from promptimize import utils
 from promptimize.simple_jinja import process_template
 
 
 class BasePromptCase:
-    parent_class_kwargs = ("evaluators", "key", "weight", "category")
+    attributes_used_for_hash = {"evaluators"}
 
     def __init__(
         self,
@@ -15,6 +17,7 @@ class BasePromptCase:
         key: Optional[str] = None,
         weight=1,
         category: str = None,  # used for info/reporting purposes only
+        prompt_executor: Any = None,
         *args,
         **kwargs,
     ) -> None:
@@ -41,11 +44,21 @@ class BasePromptCase:
         self.category = category
         self.pre_run_output = None
         self.post_run_output = None
+        self.prompt_executor = prompt_executor or self.get_prompt_executor()
 
-        self.key = key or "prompt-" + self.make_a_key()
+        self.key = key or "prompt-" + utils.short_hash(hash(self))
 
         if not utils.is_iterable(self.evaluators):
             self.evaluators = [self.evaluators]  # type: ignore
+
+    def get_prompt_executor(self):
+        model_name = os.environ.get("OPENAI_MODEL") or "text-davinci-003"
+        openai_api_key = os.environ.get("OPENAI_API_KEY")
+        return OpenAI(model_name=model_name, openai_api_key=openai_api_key)
+
+    def execute_prompt(self, prompt_str):
+        self.response = self.prompt_executor(prompt_str)
+        return self.response
 
     def pre_run(self):
         pass
@@ -53,11 +66,21 @@ class BasePromptCase:
     def post_run(self):
         pass
 
-    def make_a_key(self):
-        return utils.short_hash(str(self.extra_kwargs))
+    def __hash__(self):
+        attrs = self.attributes_used_for_hash
+        s = "|".join([utils.hashable_repr(getattr(self, attr)) for attr in attrs])
+        return utils.int_hash(s)
 
     def render(self):
         raise NotImplementedError()
+
+    def get_unique_hash(self, extra_context=None):
+        """Returns a unique identifier, determined by the run
+
+        Generally, the actual call sent to GPT (prompt, execution params)
+        represent something unique.
+        """
+        return utils.short_hash(str(self.extra_kwargs))
 
     def to_dict(self, verbose=False):
         d = {
@@ -89,7 +112,12 @@ class BasePromptCase:
         if self.pre_run_output:
             d["pre_run_output"] = self.pre_run_output
 
-        d.update({"api_call_duration_ms": self.api_call_duration_ms})
+        d.update(
+            {
+                "api_call_duration_ms": self.api_call_duration_ms,
+                "run_at": self.run_at,
+            }
+        )
         return d
 
     def test(self):
@@ -112,25 +140,26 @@ class BasePromptCase:
         highlighted = utils.serialize_object(output, style)
         print(highlighted)
 
-    def run(self, completion_create_kwargs=None):
+    def _run(self, completion_create_kwargs=None):
         completion_create_kwargs = completion_create_kwargs or {}
         self.pre_run_output = self.pre_run()
-        answer = None
         self.prompt = self.render()
+
         with utils.MeasureDuration() as md:
-            self.response = execute_prompt(self.prompt, completion_create_kwargs)
+            self.raw_response_text = self.execute_prompt(self.prompt)
+
         self.api_call_duration_ms = md.duration
-        self.raw_response_text = self.response.choices[0].text
         self.response_text = self.raw_response_text.strip("\n")
-        answer = self.response_text
 
         self.post_run_output = self.post_run()
         self.has_run = True
-        self.answer = answer
-        return answer
+        self.run_at = utils.current_iso_timestamp()
+        return self.response_text
 
 
 class PromptCase(BasePromptCase):
+    attributes_used_for_hash = BasePromptCase.attributes_used_for_hash | {"user_input"}
+
     def __init__(
         self,
         user_input,
@@ -151,6 +180,10 @@ class PromptCase(BasePromptCase):
 
 class TemplatedPromptCase(BasePromptCase):
     template_defaults: dict = {}
+    attributes_used_for_hash = BasePromptCase.attributes_used_for_hash | {
+        "user_input",
+        "extra_kwargs",
+    }
 
     def __init__(
         self,
@@ -183,15 +216,25 @@ class TemplatedPromptCase(BasePromptCase):
         return process_template(self.template, **self.jinja_context)
 
 
-class LangchainPromptCase(PromptCase):
+class LangchainPromptCase(BasePromptCase):
+    attributes_used_for_hash = BasePromptCase.attributes_used_for_hash | {
+        "extra_kwargs",
+        "langchain_prompt",
+    }
+
     def __init__(
         self,
         langchain_prompt,
         *args,
         **kwargs,
     ) -> None:
-        self.template = template
+        self.langchain_prompt = langchain_prompt
         return super().__init__(*args, **kwargs)
 
+    def to_dict(self, verbose=False, *args, **kwargs):
+        d = super().to_dict(*args, **kwargs)
+        d = utils.insert_in_dict(d, "prompt_kwargs", self.extra_kwargs, after_key="key")
+        return d
+
     def render(self):
-        return langchain_prompt.render(**self.extra_kwargs)
+        return self.langchain_prompt.format(**self.extra_kwargs)

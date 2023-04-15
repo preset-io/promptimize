@@ -66,7 +66,7 @@ class Suite:
                 separator()
                 click.secho(f"# Prompt {prompt.key}", fg="cyan")
                 separator()
-            prompt.run(completion_create_kwargs)
+            prompt._run(completion_create_kwargs)
             prompt.test()
             if not silent:
                 prompt.print(verbose=verbose, style=style)

@@ -1,8 +1,9 @@
 import json
-from typing import Dict, Any, Union, List
+from typing import Any, Dict, List, Optional, Union
 import subprocess
 import hashlib
 import json
+from datetime import datetime
 import re
 import time
 from contextlib import contextmanager
@@ -106,14 +107,18 @@ def extract_json_objects(text: str, get_first: bool = True) -> List[Dict[str, An
     return json_objects
 
 
-def short_hash(text, length=8):
+def int_hash(text):
     # Create a SHA-256 hash of the input string
-    hash_object = hashlib.sha256(text.encode())
+    hash_object = hashlib.sha256(str(text).encode())
 
     # Convert the hash to a hexadecimal string
     hex_hash = hash_object.hexdigest()
+    return int(hex_hash, 16)
 
-    # Take a substring of the hex hash for a shorter version
+
+def short_hash(obj, length=8):
+    hash_object = hashlib.sha256(str(obj).encode())
+    hex_hash = hash_object.hexdigest()
     return hex_hash[:length]
 
 
@@ -161,13 +166,15 @@ def transform_strings(obj, transformation):
         return obj
 
 
-def get_git_info():
+def get_git_info(sha_length: int = 12):
     try:
         sha = (
             subprocess.check_output(["git", "rev-parse", "HEAD"])
             .decode("utf-8")
             .strip()
         )
+        if sha_length:
+            sha = sha[:sha_length]
         branch = (
             subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"])
             .decode("utf-8")
@@ -191,9 +198,6 @@ class MeasureDuration:
     def __exit__(self, exc_type, exc_val, exc_tb):
         end_time = time.time()
         self.duration = (end_time - self.start_time) * 1000
-
-
-from typing import Any, Dict, Optional, Union
 
 
 def insert_in_dict(
@@ -256,3 +260,22 @@ def insert_in_dict(
         new_dict[key] = value
 
     return new_dict
+
+
+def current_iso_timestamp():
+    now = datetime.utcnow()
+    return now.isoformat()
+
+
+def hashable_repr(obj):
+    if isinstance(obj, (list, tuple, set)):
+        return "".join(hashable_repr(item) for item in obj)
+    elif isinstance(obj, dict):
+        return "".join(
+            hashable_repr(key) + hashable_repr(value)
+            for key, value in sorted(obj.items())
+        )
+    elif callable(obj):
+        return str(obj.__code__.co_code)
+    else:
+        return str(obj)

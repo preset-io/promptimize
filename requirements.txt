@@ -1,6 +1,6 @@
-openai
 jinja2
 black
 click
 pygments
 pyyaml
+langchain
