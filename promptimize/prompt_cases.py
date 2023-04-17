@@ -4,12 +4,15 @@ from typing import Any, Callable, Dict, List, Optional, Union
 
 from langchain.llms import OpenAI
 
+from box import Box
+
 from promptimize import utils
 from promptimize.simple_jinja import process_template
 
 
 class BasePromptCase:
-    attributes_used_for_hash = {"evaluators"}
+    attributes_used_for_hash = set()
+    verbose_attrs = {"prompt"}
 
     def __init__(
         self,
@@ -18,6 +21,7 @@ class BasePromptCase:
         weight=1,
         category: str = None,  # used for info/reporting purposes only
         prompt_executor: Any = None,
+        prompt_executor_kwargs: dict = None,
         *args,
         **kwargs,
     ) -> None:
@@ -34,8 +38,6 @@ class BasePromptCase:
         self.extra_args = args
         self.extra_kwargs = kwargs
         self.response = None
-        self.response_text = None
-        self.prompt = None
         self.has_run = False
         self.was_tested = False
         self.test_results = None
@@ -45,8 +47,13 @@ class BasePromptCase:
         self.pre_run_output = None
         self.post_run_output = None
         self.prompt_executor = prompt_executor or self.get_prompt_executor()
+        self.prompt_executor_kwargs = prompt_executor_kwargs or {}
 
-        self.key = key or "prompt-" + utils.short_hash(hash(self))
+        self.execution = Box()
+
+        self.prompt = self.render()
+
+        self.key = key or "prompt-" + self.hash
 
         if not utils.is_iterable(self.evaluators):
             self.evaluators = [self.evaluators]  # type: ignore
@@ -54,6 +61,7 @@ class BasePromptCase:
     def get_prompt_executor(self):
         model_name = os.environ.get("OPENAI_MODEL") or "text-davinci-003"
         openai_api_key = os.environ.get("OPENAI_API_KEY")
+        self.prompt_executor_kwargs = {"model_name": model_name}
         return OpenAI(model_name=model_name, openai_api_key=openai_api_key)
 
     def execute_prompt(self, prompt_str):
@@ -65,6 +73,10 @@ class BasePromptCase:
 
     def post_run(self):
         pass
+
+    @property
+    def hash(self):
+        return utils.short_hash(hash(self))
 
     def __hash__(self):
         attrs = self.attributes_used_for_hash
@@ -85,76 +97,58 @@ class BasePromptCase:
     def to_dict(self, verbose=False):
         d = {
             "key": self.key,
-            "response_text": self.response_text,
+            "prompt_hash": self.prompt_hash,
+            "response": self.response,
+            "prompt": self.prompt,
+            "weight": self.weight,
+            "execution": self.execution.to_dict(),
         }
-        if verbose:
-            d.update(
-                {
-                    "response": self.response,
-                    "prompt": self.prompt,
-                }
-            )
-        if self.was_tested:
-            d.update(
-                {
-                    "test_results_avg": self.test_results_avg,
-                }
-            )
-        if self.weight != 1:
-            d.update(
-                {
-                    "weight": self.weight,
-                }
-            )
-        if self.post_run_output:
-            d["post_run_output"] = self.post_run_output
-
-        if self.pre_run_output:
-            d["pre_run_output"] = self.pre_run_output
-
-        d.update(
-            {
-                "api_call_duration_ms": self.api_call_duration_ms,
-                "run_at": self.run_at,
-            }
-        )
         return d
-
-    def test(self):
-        test_results = []
-        for evaluator in self.evaluators:
-            result = evaluator(self.response_text)
-            if not (utils.is_numeric(result) and 0 <= result <= 1):
-                raise Exception("Value should be between 0 and 1")
-            test_results.append(result)
-
-        self.test_results = test_results
-        self.test_results_avg = None
-        if len(self.test_results):
-            self.test_results_avg = sum(self.test_results) / len(self.test_results)
-        self.was_tested = True
 
     def print(self, verbose=False, style="yaml"):
         style = style or "yaml"
         output = self.to_dict(verbose)
+        if not verbose:
+            for attr in self.verbose_attrs:
+                del output[attr]
+        if self.weight == 1:
+            del output["weight"]
         highlighted = utils.serialize_object(output, style)
         print(highlighted)
 
-    def _run(self, completion_create_kwargs=None):
-        completion_create_kwargs = completion_create_kwargs or {}
-        self.pre_run_output = self.pre_run()
-        self.prompt = self.render()
+    def test(self):
+        test_results = []
+        for evaluator in self.evaluators:
+            result = evaluator(self)
+            if not (utils.is_numeric(result) and 0 <= result <= 1):
+                raise Exception("Value should be between 0 and 1")
+            test_results.append(result)
+
+        if len(test_results):
+            self.execution.test_results_avg = sum(test_results) / len(test_results)
+        self.was_tested = True
+
+    @property
+    def prompt_hash(self):
+        return utils.short_hash(self.prompt)
+
+    def _run(self):
+
+        pre_run_output = self.pre_run()
+        if pre_run_output:
+            self.execution.pre_run_output = pre_run_output
 
         with utils.MeasureDuration() as md:
-            self.raw_response_text = self.execute_prompt(self.prompt)
+            self.response = self.execute_prompt(self.prompt).strip()
 
-        self.api_call_duration_ms = md.duration
-        self.response_text = self.raw_response_text.strip("\n")
+        self.execution.api_call_duration_ms = md.duration
 
-        self.post_run_output = self.post_run()
+        post_run_output = self.post_run()
+        if post_run_output:
+            self.execution.post_run_output = post_run_output
         self.has_run = True
-        self.run_at = utils.current_iso_timestamp()
-        return self.response_text
+        self.execution.run_at = utils.current_iso_timestamp()
+        return self.response
 
 
 class PromptCase(BasePromptCase):

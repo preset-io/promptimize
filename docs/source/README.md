@@ -41,36 +41,6 @@ simple_prompts = [
 ### The CLI
 ```bash
 $ promptimize examples/readme_hello_world.py
-💡 ¡promptimize! 💡
-# ----------------------------------------
-# Prompt prompt-c6950959
-# ----------------------------------------
-key: prompt-c6950959
-input: hello there!
-response_text: Hi there! How are you?
-test_results_avg: 1.0
-
-# ----------------------------------------
-# Prompt prompt-7bfe4487
-# ----------------------------------------
-key: prompt-7bfe4487
-input: name the top 50 guitar players!
-response_text: |-
-  1. Jimi Hendrix
-  2. Eric Clapton
-  3. Jimmy Page
-  {...}
-  50. Jerry Garcia
-test_results_avg: 0.0
-
-# ----------------------------------------
-# Suite summary
-# ----------------------------------------
-suite_score: 0.5
-completion_create_kwargs:
-  engine: text-davinci-003
-  max_tokens: 1000
-  temperature: 0.5
 ```
 
 ## Problem + POV

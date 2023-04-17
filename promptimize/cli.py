@@ -2,9 +2,10 @@ from textwrap import dedent
 
 import click
 
-from promptimize.prompt_cases import BasePromptCase
-from promptimize.suite import Suite
 from promptimize.crawler import discover_objects
+from promptimize.prompt_cases import BasePromptCase
+from promptimize.reports import Report
+from promptimize.suite import Suite
 from promptimize import utils
 
 
@@ -62,12 +63,17 @@ def run(path, verbose, style, temperature, max_tokens, engine, output, silent):
         "max_tokens": max_tokens,
         "temperature": temperature,
     }
-    suite = Suite(uses_cases, completion_create_kwargs)
-    suite.execute(verbose=verbose, style=style, silent=silent)
+
+    report = None
     if output:
-        with open(output, "w") as f:
-            print(f"# Writing file output to {output}")
-            f.write(utils.serialize_object(suite.to_dict(), highlighted=False))
+        report = Report.from_path(output)
+
+    suite = Suite(uses_cases, completion_create_kwargs)
+    suite.execute(verbose=verbose, style=style, silent=silent, report=report)
+
+    if output:
+        output_report = Report.from_suite(suite)
+        output_report.write(output)
 
 
 cli.add_command(run)
