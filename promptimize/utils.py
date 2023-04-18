@@ -12,6 +12,7 @@ from pygments import highlight
 from pygments.lexers import YamlLexer, JsonLexer
 from pygments.formatters import TerminalFormatter
 import yaml
+from yaml.representer import SafeRepresenter
 
 
 def is_numeric(value):
@@ -28,6 +29,32 @@ def is_iterable(obj):
         return False
 
 
+# Yaml-related section, hacking out of some issues
+
+
+class folded_str(str):
+    pass
+
+
+class literal_str(str):
+    pass
+
+
+def change_style(style, representer):
+    def new_representer(dumper, data):
+        scalar = representer(dumper, data)
+        scalar.style = style
+        return scalar
+
+    return new_representer
+
+
+# represent_str does handle some corner cases, so use that
+# instead of calling represent_scalar directly
+represent_folded_str = change_style(">", SafeRepresenter.represent_str)
+represent_literal_str = change_style("|", SafeRepresenter.represent_str)
+
+
 def str_presenter(dumper, data):
     """
     Some hack to get yaml output to use look good for multiline,
@@ -42,6 +69,8 @@ def str_presenter(dumper, data):
     return dumper.represent_scalar("tag:yaml.org,2002:str", data)
 
 
+yaml.add_representer(folded_str, represent_folded_str)
+yaml.add_representer(literal_str, represent_literal_str)
 yaml.add_representer(str, str_presenter)
 
 

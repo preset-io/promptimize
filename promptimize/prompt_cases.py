@@ -54,7 +54,7 @@ class BasePromptCase:
 
         self.execution = Box()
 
-        self.prompt = self.render()
+        self.prompt = utils.literal_str(self.render()).strip()
 
         self.key = key or "prompt-" + self.prompt_hash
 
