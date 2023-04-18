@@ -5,3 +5,4 @@ click
 pygments
 pyyaml
 langchain
+ruamel.yaml

@@ -22,6 +22,7 @@ class BasePromptCase:
         category: str = None,  # used for info/reporting purposes only
         prompt_executor: Any = None,
         prompt_executor_kwargs: dict = None,
+        prompt_hash=None,
         *args,
         **kwargs,
     ) -> None:
@@ -49,11 +50,13 @@ class BasePromptCase:
         self.prompt_executor = prompt_executor or self.get_prompt_executor()
         self.prompt_executor_kwargs = prompt_executor_kwargs or {}
 
+        self._prompt_hash = prompt_hash
+
         self.execution = Box()
 
         self.prompt = self.render()
 
-        self.key = key or "prompt-" + self.hash
+        self.key = key or "prompt-" + self.prompt_hash
 
         if not utils.is_iterable(self.evaluators):
             self.evaluators = [self.evaluators]  # type: ignore
@@ -80,7 +83,12 @@ class BasePromptCase:
 
     def __hash__(self):
         attrs = self.attributes_used_for_hash
-        s = "|".join([utils.hashable_repr(getattr(self, attr)) for attr in attrs])
+        s = "|".join(
+            [
+                utils.short_hash(utils.hashable_repr(getattr(self, attr)))
+                for attr in attrs
+            ]
+        )
         return utils.int_hash(s)
 
     def render(self):
@@ -98,8 +106,8 @@ class BasePromptCase:
         d = {
             "key": self.key,
             "prompt_hash": self.prompt_hash,
-            "response": self.response,
             "prompt": self.prompt,
+            "response": self.response,
             "weight": self.weight,
             "execution": self.execution.to_dict(),
         }
@@ -130,25 +138,28 @@ class BasePromptCase:
 
     @property
     def prompt_hash(self):
-        return utils.short_hash(self.prompt)
+        if self._prompt_hash:
+            return self._prompt_hash
+        return utils.short_hash(hash(self))
 
-    def _run(self):
+    def _run(self, dry_run):
 
         pre_run_output = self.pre_run()
         if pre_run_output:
             self.execution.pre_run_output = pre_run_output
 
-        with utils.MeasureDuration() as md:
-            self.response = self.execute_prompt(self.prompt).strip()
+        if not dry_run:
+            with utils.MeasureDuration() as md:
+                self.response = self.execute_prompt(self.prompt).strip()
 
-        self.execution.api_call_duration_ms = md.duration
+            self.execution.api_call_duration_ms = md.duration
 
-        post_run_output = self.post_run()
-        if post_run_output:
-            self.execution.post_run_output = post_run_output
-        self.has_run = True
-        self.execution.run_at = utils.current_iso_timestamp()
-        return self.response
+            post_run_output = self.post_run()
+            if post_run_output:
+                self.execution.post_run_output = post_run_output
+            self.has_run = True
+            self.execution.run_at = utils.current_iso_timestamp()
+            return self.response
 
 
 class PromptCase(BasePromptCase):
@@ -204,6 +215,7 @@ class TemplatedPromptCase(BasePromptCase):
         context_kwargs = self.template_defaults.copy()
         context_kwargs.update(self.get_extra_template_context())
         context_kwargs.update(self.extra_kwargs)
+        context_kwargs.update({"user_input": self.user_input})
         return context_kwargs
 
     def render(self, **kwargs):

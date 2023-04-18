@@ -35,7 +35,7 @@ def str_presenter(dumper, data):
 
     from: https://stackoverflow.com/questions/8640959/how-can-i-control-what-scalar-form-pyyaml-uses-for-my-data
     """
-    if len(data.splitlines()) > 1 or "\n" in data:
+    if len(data.splitlines()) > 1 or "\n" in data or "\\n" in data:
         text_list = [line.rstrip() for line in data.splitlines()]
         fixed_data = "\n".join(text_list)
         return dumper.represent_scalar("tag:yaml.org,2002:str", fixed_data, style="|")
@@ -43,35 +43,6 @@ def str_presenter(dumper, data):
 
 
 yaml.add_representer(str, str_presenter)
-
-
-def extract_json(text: str, only_get_first_dict: bool = True):
-    """
-    Extract JSON objects from a given string and optionally return only the first object found.
-
-    Args:
-        text (str): The input string containing JSON objects.
-        only_get_first_dict (bool, optional): Whether to return only the first JSON object found.
-            Defaults to True.
-
-    Returns:
-        Union[Dict[str, Any], List[Dict[str, Any]]]: The first JSON object found if
-            `only_get_first_dict` is True, otherwise a list of JSON objects found in the input string.
-
-    Example:
-
-    >>> extract_json('Some text: {"key1": "value1", "key2": "value2"} and more text.')
-    {'key1': 'value1', 'key2': 'value2'}
-
-    >>> extract_json('{"a": 1, "b": 2} and {"c": 3, "d": 4}', only_get_first_dict=False)
-    [{'a': 1, 'b': 2}, {'c': 3, 'd': 4}]
-    """
-    json_objects = extract_json_objects(text)  # type: ignore
-
-    if only_get_first_dict:
-        return json_objects[0] if json_objects else None
-    else:
-        return json_objects
 
 
 def extract_json_objects(text: str, get_first: bool = True) -> List[Dict[str, Any]]:

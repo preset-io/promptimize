@@ -10,9 +10,15 @@ from promptimize.prompt_cases import BasePromptCase
 import click
 
 
-def separator() -> None:
+def separator(fg=None) -> None:
     """Print a separator line."""
-    click.secho("# " + "-" * 40, fg="cyan")
+    click.secho("# " + "-" * 40, fg=fg)
+
+
+def separated_section(s, fg=None):
+    separator(fg)
+    click.secho(s, fg=fg)
+    separator(fg)
 
 
 class Suite:
@@ -44,6 +50,7 @@ class Suite:
         style: str = "yaml",
         silent: bool = False,
         report=None,
+        dry_run: bool = False,
     ) -> None:
         """
         Execute the suite with the given settings.
@@ -54,26 +61,24 @@ class Suite:
             silent (bool): If True, suppress output. Defaults to False.
         """
         for prompt in self.prompts.values():
+            should_run = self.should_prompt_execute(prompt, report)
             if not silent:
-                separator()
-                click.secho(f"# Prompt {prompt.key}", fg="cyan")
-                separator()
+                if should_run:
+                    separated_section(f"# [RUN] prompt: {prompt.key}", fg="cyan")
+                else:
+                    separated_section(f"# [SKIP] prompt: {prompt.key}", fg="yellow")
 
-            should_run = False
-            if not report:
-                should_run = True
+            if should_run:
+                prompt._run(dry_run)
+                if not dry_run:
+                    prompt.test()
 
-            if self.should_prompt_execute(prompt, report):
-                prompt._run()
-                prompt.test()
-            if not silent:
+            if not silent and should_run:
                 prompt.print(verbose=verbose, style=style)
 
         # `self.last_run_completion_create_kwargs = completion_create_kwargs
         if not silent:
-            separator()
-            click.secho("# Suite summary", fg="cyan")
-            separator()
+            separated_section("# Suite summary", fg="cyan")
             click.echo(utils.serialize_object(self._serialize_run_summary(), style))
 
     def should_prompt_execute(self, prompt, report):

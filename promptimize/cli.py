@@ -21,6 +21,7 @@ def cli():
     type=click.Path(exists=True),
 )
 @click.option("--verbose", "-v", is_flag=True, help="Trigger more verbose output")
+@click.option("--dry-run", "-x", is_flag=True, help="DRY run, don't call the API")
 @click.option(
     "--style",
     "-s",
@@ -55,8 +56,10 @@ def cli():
     type=click.Path(),
 )
 @click.option("--silent", "-s", is_flag=True)
-def run(path, verbose, style, temperature, max_tokens, engine, output, silent):
+def run(path, verbose, dry_run, style, temperature, max_tokens, engine, output, silent):
     click.secho("💡 ¡promptimize! 💡", fg="cyan")
+    if dry_run:
+        click.secho("# DRY RUN MODE ACTIVATED!", fg="red")
     uses_cases = discover_objects(path, BasePromptCase)
     completion_create_kwargs = {
         "engine": engine,
@@ -69,11 +72,16 @@ def run(path, verbose, style, temperature, max_tokens, engine, output, silent):
         report = Report.from_path(output)
 
     suite = Suite(uses_cases, completion_create_kwargs)
-    suite.execute(verbose=verbose, style=style, silent=silent, report=report)
+    suite.execute(
+        verbose=verbose, style=style, silent=silent, report=report, dry_run=dry_run
+    )
 
     if output:
         output_report = Report.from_suite(suite)
-        output_report.write(output)
+        if report:
+            output_report.merge(report)
+        click.secho(f"# Writing file output to {output}", fg="yellow")
+        output_report.write(output, style=style)
 
 
 cli.add_command(run)
