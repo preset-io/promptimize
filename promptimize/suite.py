@@ -3,11 +3,13 @@ This module provides a Suite class to manage and execute a collection of
 use cases (prompts) to be tested. It allows running the tests, displaying
 results, and serializing the summary of the suite.
 """
-
+import random
 from typing import Any, Dict, List, Optional, Union
+
+import click
+
 from promptimize import utils
 from promptimize.prompt_cases import BasePromptCase
-import click
 
 
 def separator(fg=None) -> None:
@@ -51,6 +53,11 @@ class Suite:
         silent: bool = False,
         report=None,
         dry_run: bool = False,
+        keys: list = None,
+        force: bool = False,
+        repair: bool = False,
+        human: bool = False,
+        shuffle: bool = False,
     ) -> None:
         """
         Execute the suite with the given settings.
@@ -60,13 +67,28 @@ class Suite:
             style (str): Output style for serialization. Defaults to "yaml".
             silent (bool): If True, suppress output. Defaults to False.
         """
-        for prompt in self.prompts.values():
-            should_run = self.should_prompt_execute(prompt, report)
+        prompts = self.prompts.values()
+        if keys:
+            prompts = [p for p in prompts if p.key in keys]
+        if repair and report:
+            failed_keys = report.failed_keys
+            prompts = [p for p in prompts if p.key in failed_keys]
+
+        if shuffle:
+            prompts = random.shuffle(prompts)
+
+        for i, prompt in enumerate(prompts):
+            should_run = force or self.should_prompt_execute(prompt, report)
+            progress = f"({i+1}/{len(prompts)})"
             if not silent:
                 if should_run:
-                    separated_section(f"# [RUN] prompt: {prompt.key}", fg="cyan")
+                    separated_section(
+                        f"# {progress} [RUN] prompt: {prompt.key}", fg="cyan"
+                    )
                 else:
-                    separated_section(f"# [SKIP] prompt: {prompt.key}", fg="yellow")
+                    separated_section(
+                        f"# {progress} [SKIP] prompt: {prompt.key}", fg="yellow"
+                    )
 
             if should_run:
                 prompt._run(dry_run)
@@ -75,6 +97,26 @@ class Suite:
 
             if not silent and should_run:
                 prompt.print(verbose=verbose, style=style)
+
+            if human:
+                v = click.prompt(
+                    'Press Enter to continue, "Y" to force success, "N" to force fail, "X" to exit',
+                    default="",
+                    show_default=False,
+                )
+                v = v.lower()
+                if v == "":
+                    click.secho("Leaving result unaltered", fg="yellow")
+                elif v == "y":
+                    prompt.execution.test_results_avg = 1
+                    prompt.execution.human_override = True
+                    click.secho("Forcing SUCCESS", fg="green")
+                elif v == "n":
+                    prompt.execution.test_results_avg = 0
+                    prompt.execution.human_override = True
+                    click.secho("Forcing FAILURE", fg="red")
+                elif v == "x":
+                    break
 
         # `self.last_run_completion_create_kwargs = completion_create_kwargs
         if not silent:
