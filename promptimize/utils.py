@@ -11,6 +11,7 @@ from contextlib import contextmanager
 from pygments import highlight
 from pygments.lexers import YamlLexer, JsonLexer
 from pygments.formatters import TerminalFormatter
+from tabulate import tabulate
 import yaml
 from yaml.representer import SafeRepresenter
 
@@ -279,3 +280,13 @@ def hashable_repr(obj):
         return str(obj.__code__.co_code)
     else:
         return str(obj)
+
+
+def trabulate(df, showindex=True, headers="keys"):
+    headers = headers if headers else []
+    for column in df.columns:
+        if df[column].dtype == "int64":
+            df[column] = df[column].astype(str)
+    return tabulate(
+        df, headers=headers, showindex=showindex, tablefmt="psql", floatfmt=".2f"
+    )

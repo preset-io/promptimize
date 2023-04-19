@@ -136,10 +136,11 @@ cli.add_command(run)
     required=True,
     type=click.Path(exists=True),
 )
-def report(path):
+@click.option("--groupby", "-g", help="GROUPBY")
+def report(path, groupby):
     click.secho(f"# Reading report @ {path}", fg="yellow")
     report = Report.from_path(path)
-    report.print_summary()
+    report.print_summary(groupby)
 
 
 cli.add_command(report)

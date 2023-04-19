@@ -2,7 +2,6 @@ import yaml
 from box import Box
 
 import pandas as pd
-from tabulate import tabulate
 
 from promptimize import utils
 
@@ -60,6 +59,7 @@ class Report:
         try:
             with open(path, "r") as f:
                 report = cls(path, yaml.safe_load(f))
+            # report.fix_stuff()
             return report
         except FileNotFoundError:
             return None
@@ -69,11 +69,15 @@ class Report:
         report = cls(data=suite.to_dict())
         return report
 
-    def fix_stuff():
+    def fix_stuff(self):
         # DELETEME
-        for p in report.prompts.values():
-            if len(p.execution.keys()) == 1:
-                p.execution = {}
+        for p in self.prompts.values():
+            if (
+                p.execution.get("is_identical")
+                and p.execution.get("test_results_avg") == 0
+            ):
+                p.execution.test_results_avg = 1
+        self.write()
 
     def get_prompt(self, prompt_key):
         return self.prompts.get(prompt_key)
@@ -82,24 +86,25 @@ class Report:
         prompts = [p for p in self.prompts.values() if p.execution]
         return pd.json_normalize(prompts)
 
-    def print_summary(self, style="yaml"):
+    def print_summary(self, groupby=None):
+
+        if groupby:
+            self.print_summary(groupby=None)
+
         df = self.prompt_df()
         weigthed_results = df["weight"] * df["execution.test_results_avg"]
 
-        d = {
-            "prompts": len(df),
-            "weigthed_results": float(weigthed_results.sum()),
-            "total_weight": float(df["weight"].sum()),
-            "score": float(weigthed_results.sum() / df["weight"].sum()),
-        }
-        print(utils.serialize_object(d, highlighted=True, style=style))
+        df["score"] = df["weight"] * df["execution.test_results_avg"]
 
-        pt = df.pivot_table(
-            index="prompt_kwargs.db_id",
-            columns="execution.is_identical",
-            values="key",
-            aggfunc="count",
-            fill_value=0,
-        )
-        pt["perc"] = (pt[True] / (pt[True] + pt[False])) * 100
-        print(tabulate(pt, headers="keys", showindex=True, tablefmt="psql"))
+        if groupby:
+            df = df[[groupby, "weight", "score"]].groupby(groupby).sum()
+        else:
+            df = df.agg({"weight": "sum", "score": "sum"}).to_frame().T
+        df["perc"] = (df["score"] / df["weight"]) * 100
+        df = df.sort_values(by="weight", ascending=False)
+        headers = []
+        if groupby:
+            headers = "keys"
+        else:
+            df = df.T
+        print(utils.trabulate(df, headers=headers))
