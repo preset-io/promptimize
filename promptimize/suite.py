@@ -75,7 +75,7 @@ class Suite:
             prompts = [p for p in prompts if p.key in failed_keys]
 
         if shuffle:
-            prompts = random.shuffle(prompts)
+            random.shuffle(prompts)
 
         for i, prompt in enumerate(prompts):
             should_run = force or self.should_prompt_execute(prompt, report)
@@ -98,7 +98,7 @@ class Suite:
             if not silent and should_run:
                 prompt.print(verbose=verbose, style=style)
 
-            if human:
+            if should_run and human:
                 v = click.prompt(
                     'Press Enter to continue, "Y" to force success, "N" to force fail, "X" to exit',
                     default="",
