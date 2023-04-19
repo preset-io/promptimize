@@ -58,6 +58,7 @@ class Suite:
         repair: bool = False,
         human: bool = False,
         shuffle: bool = False,
+        limit: int = 0,
     ) -> None:
         """
         Execute the suite with the given settings.
@@ -67,7 +68,7 @@ class Suite:
             style (str): Output style for serialization. Defaults to "yaml".
             silent (bool): If True, suppress output. Defaults to False.
         """
-        prompts = self.prompts.values()
+        prompts = list(self.prompts.values())
         if keys:
             prompts = [p for p in prompts if p.key in keys]
         if repair and report:
@@ -76,6 +77,9 @@ class Suite:
 
         if shuffle:
             random.shuffle(prompts)
+
+        if limit:
+            prompts = prompts[:limit]
 
         for i, prompt in enumerate(prompts):
             should_run = force or self.should_prompt_execute(prompt, report)
@@ -129,6 +133,9 @@ class Suite:
         report_prompt = report.prompts.get(prompt.key)
         if not report_prompt:
             return True
+        else:
+            if not report_prompt.execution:
+                return True
 
         if report_prompt.prompt_hash == prompt.prompt_hash:
             return False

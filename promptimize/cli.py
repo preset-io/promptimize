@@ -46,6 +46,13 @@ def cli():
     help="max_tokens passed to the model",
 )
 @click.option(
+    "--limit",
+    "-l",
+    type=click.INT,
+    default=0,
+    help="limit how many prompt cases to run in a single batch",
+)
+@click.option(
     "--temperature",
     "-t",
     type=click.FLOAT,
@@ -81,6 +88,7 @@ def run(
     repair,
     human,
     shuffle,
+    limit,
 ):
     click.secho("💡 ¡promptimize! 💡", fg="cyan")
     if dry_run:
@@ -108,6 +116,7 @@ def run(
         repair=repair,
         human=human,
         shuffle=shuffle,
+        limit=limit,
     )
 
     if output:

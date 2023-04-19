@@ -60,10 +60,6 @@ class Report:
         try:
             with open(path, "r") as f:
                 report = cls(path, yaml.safe_load(f))
-            for p in report.prompts.values():
-                p.execution.test_results_avg = (
-                    1 if p.execution.get("is_identical", False) is True else 0
-                )
             return report
         except FileNotFoundError:
             return None
@@ -73,11 +69,18 @@ class Report:
         report = cls(data=suite.to_dict())
         return report
 
+    def fix_stuff():
+        # DELETEME
+        for p in report.prompts.values():
+            if len(p.execution.keys()) == 1:
+                p.execution = {}
+
     def get_prompt(self, prompt_key):
         return self.prompts.get(prompt_key)
 
     def prompt_df(self):
-        return pd.json_normalize(self.prompts.values())
+        prompts = [p for p in self.prompts.values() if p.execution]
+        return pd.json_normalize(prompts)
 
     def print_summary(self, style="yaml"):
         df = self.prompt_df()
@@ -98,4 +101,5 @@ class Report:
             aggfunc="count",
             fill_value=0,
         )
-        print(tabulate(pt, headers="keys", showindex=True))
+        pt["perc"] = (pt[True] / (pt[True] + pt[False])) * 100
+        print(tabulate(pt, headers="keys", showindex=True, tablefmt="psql"))
