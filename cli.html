@@ -1,0 +1,243 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>The CLI &#8212; promptimize  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="API" href="api.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="the-cli">
+<h1>The CLI<a class="headerlink" href="#the-cli" title="Permalink to this heading">¶</a></h1>
+<section id="promptimize">
+<h2>promptimize<a class="headerlink" href="#promptimize" title="Permalink to this heading">¶</a></h2>
+<p>💡¡promptimize!💡 CLI. <cite>p9e</cite> works too!</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>promptimize<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
+</pre></div>
+</div>
+<section id="promptimize-report">
+<h3>report<a class="headerlink" href="#promptimize-report" title="Permalink to this heading">¶</a></h3>
+<p>report on how your suites of prompts are performing</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>promptimize<span class="w"> </span>report<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>PATH
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-promptimize-report-g">
+<span id="cmdoption-promptimize-report-groupby"></span><span class="sig-name descname"><span class="pre">-g</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--groupby</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;groupby&gt;</span></span><a class="headerlink" href="#cmdoption-promptimize-report-g" title="Permalink to this definition">¶</a></dt>
+<dd><p>GROUPBY</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-promptimize-report-arg-PATH">
+<span id="cmdoption-promptimize-report-arg-path"></span><span class="sig-name descname"><span class="pre">PATH</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-promptimize-report-arg-PATH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+<section id="promptimize-run">
+<h3>run<a class="headerlink" href="#promptimize-run" title="Permalink to this heading">¶</a></h3>
+<p>run some prompts</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>promptimize<span class="w"> </span>run<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>PATH
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-promptimize-run-v">
+<span id="cmdoption-promptimize-run-verbose"></span><span class="sig-name descname"><span class="pre">-v</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-promptimize-run-v" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trigger more verbose output</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-promptimize-run-f">
+<span id="cmdoption-promptimize-run-force"></span><span class="sig-name descname"><span class="pre">-f</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--force</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-promptimize-run-f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Force run, do not skip</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-promptimize-run-h">
+<span id="cmdoption-promptimize-run-human"></span><span class="sig-name descname"><span class="pre">-h</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--human</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-promptimize-run-h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Human review, allowing a human to review and force pass/fail each prompt case</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-promptimize-run-r">
+<span id="cmdoption-promptimize-run-repair"></span><span class="sig-name descname"><span class="pre">-r</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--repair</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-promptimize-run-r" title="Permalink to this definition">¶</a></dt>
+<dd><p>Only re-run previously failed</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-promptimize-run-x">
+<span id="cmdoption-promptimize-run-dry-run"></span><span class="sig-name descname"><span class="pre">-x</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--dry-run</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-promptimize-run-x" title="Permalink to this definition">¶</a></dt>
+<dd><p>DRY run, don’t call the API</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-promptimize-run-shuffle">
+<span class="sig-name descname"><span class="pre">--shuffle</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-promptimize-run-shuffle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shuffle the prompts in a random order</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-promptimize-run-s">
+<span id="cmdoption-promptimize-run-style"></span><span class="sig-name descname"><span class="pre">-s</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--style</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;style&gt;</span></span><a class="headerlink" href="#cmdoption-promptimize-run-s" title="Permalink to this definition">¶</a></dt>
+<dd><p>json or yaml formatting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Options<span class="colon">:</span></dt>
+<dd class="field-odd"><p>json | yaml</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-promptimize-run-m">
+<span id="cmdoption-promptimize-run-max-tokens"></span><span class="sig-name descname"><span class="pre">-m</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--max-tokens</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;max_tokens&gt;</span></span><a class="headerlink" href="#cmdoption-promptimize-run-m" title="Permalink to this definition">¶</a></dt>
+<dd><p>max_tokens passed to the model</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-promptimize-run-l">
+<span id="cmdoption-promptimize-run-limit"></span><span class="sig-name descname"><span class="pre">-l</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--limit</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;limit&gt;</span></span><a class="headerlink" href="#cmdoption-promptimize-run-l" title="Permalink to this definition">¶</a></dt>
+<dd><p>limit how many prompt cases to run in a single batch</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-promptimize-run-t">
+<span id="cmdoption-promptimize-run-temperature"></span><span class="sig-name descname"><span class="pre">-t</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--temperature</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;temperature&gt;</span></span><a class="headerlink" href="#cmdoption-promptimize-run-t" title="Permalink to this definition">¶</a></dt>
+<dd><p>max_tokens passed to the model</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-promptimize-run-e">
+<span id="cmdoption-promptimize-run-engine"></span><span class="sig-name descname"><span class="pre">-e</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--engine</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;engine&gt;</span></span><a class="headerlink" href="#cmdoption-promptimize-run-e" title="Permalink to this definition">¶</a></dt>
+<dd><p>model as accepted by the openai API</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-promptimize-run-k">
+<span id="cmdoption-promptimize-run-key"></span><span class="sig-name descname"><span class="pre">-k</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--key</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key&gt;</span></span><a class="headerlink" href="#cmdoption-promptimize-run-k" title="Permalink to this definition">¶</a></dt>
+<dd><p>The keys to run</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-promptimize-run-o">
+<span id="cmdoption-promptimize-run-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;output&gt;</span></span><a class="headerlink" href="#cmdoption-promptimize-run-o" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-promptimize-run-0">
+<span id="cmdoption-promptimize-run-silent"></span><span class="sig-name descname"><span class="pre">-s</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--silent</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-promptimize-run-0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-promptimize-run-arg-PATH">
+<span id="cmdoption-promptimize-run-arg-path"></span><span class="sig-name descname"><span class="pre">PATH</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-promptimize-run-arg-PATH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="https://user-images.githubusercontent.com/487433/229948453-36cbc2d1-e71f-4e87-9111-ab428bc96f4c.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="index.html">promptimize</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The CLI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#promptimize">promptimize</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="api.html" title="previous chapter">API</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Maxime Beauchemin.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/cli.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

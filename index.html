@@ -1,0 +1,315 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>💡 ¡promptimize! 💡 &#8212; promptimize  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API" href="api.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="promptimize">
+<h1>💡 ¡promptimize! 💡<a class="headerlink" href="#promptimize" title="Permalink to this heading">¶</a></h1>
+<img src="https://user-images.githubusercontent.com/487433/229948453-36cbc2d1-e71f-4e87-9111-ab428bc96f4c.png" width=300/><p>Promptimize is a prompt engineering evaluation and testing toolkit.</p>
+<p>It accelerates and provides structure around prompt engineering at scale
+with confidence, brigning some of the ideas behind test-driven
+developmet (TDD) to engineering prompts.</p>
+<p>With promptimize, you can:</p>
+<ul class="simple">
+<li><p>Define your “prompt cases” (think “test cases” but specific to evaluating
+prompts) as code and associate them with evaluation functions</p></li>
+<li><p>Generate prompt variations dynamically</p></li>
+<li><p>Execute and rank prompts test suites across different
+engines/models/temperature/settings and compare results, brining
+the hyperparameter tuning mindset to prompt engineering</p></li>
+<li><p>Get reports on your prompts’ performance as you iterate. Answer question
+around how different prompt suites are performing against one-another.
+Which individual cases or categories of cases improved? regressed?</p></li>
+<li><p>Minimize API calls! only re-assess what changed as you change it</p></li>
+<li><p>Perform human if and where needed, introspected failed cases, overriding
+false negatives</p></li>
+</ul>
+<p>In essence, promptimize provides a programmatic way to execute and fine-tune
+your prompts and evaluation functions in Python, allowing you to iterate
+quickly and with confidence.</p>
+<section id="hello-world-the-simplest-prompt-examples">
+<h2>Hello world - the simplest prompt examples<a class="headerlink" href="#hello-world-the-simplest-prompt-examples" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference external" href="https://github.com/preset-io/promptimize/tree/master/examples">more examples on GitHub</a></p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Brining some &quot;prompt generator&quot; classes - note that you can derive and extend those</span>
+<span class="kn">from</span> <span class="nn">promptimize.prompts</span> <span class="kn">import</span> <span class="n">SimplePrompt</span>
+
+<span class="c1"># Bringing some useful eval function that help evaluating and scoring responses</span>
+<span class="c1"># eval functions have a handle on the prompt object and are expected</span>
+<span class="c1"># to return a score between 0 and 1</span>
+<span class="kn">from</span> <span class="nn">promptimize</span> <span class="kn">import</span> <span class="n">evals</span>
+
+<span class="c1"># Promptimize will scan the target folder and find all Prompt objects</span>
+<span class="c1"># and derivatives that are in the python modules</span>
+<span class="n">simple_prompts</span> <span class="o">=</span> <span class="p">[</span>
+
+    <span class="c1"># Prompting &quot;hello there&quot; and making sure there&#39;s &quot;hi&quot; or &quot;hello&quot;</span>
+    <span class="c1"># somewhere in the answer</span>
+    <span class="n">PromptCase</span><span class="p">(</span><span class="s2">&quot;hello there!&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">evals</span><span class="o">.</span><span class="n">any_word</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;hi&quot;</span><span class="p">,</span> <span class="s2">&quot;hello&quot;</span><span class="p">])),</span>
+    <span class="n">PromptCase</span><span class="p">(</span>
+        <span class="s2">&quot;name the top 50 guitar players!&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">evals</span><span class="o">.</span><span class="n">all_words</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;frank zappa&quot;</span><span class="p">])</span>
+    <span class="p">),</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<section id="the-cli">
+<h3>The CLI<a class="headerlink" href="#the-cli" title="Permalink to this heading">¶</a></h3>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span>$ promptimize -h
+</pre></div>
+</div>
+</section>
+</section>
+<section id="problem-pov">
+<h2>Problem + POV<a class="headerlink" href="#problem-pov" title="Permalink to this heading">¶</a></h2>
+<p>Thousands of product builders are currently trying to figure out how to
+bring the power of AI into the products and experiences they are building.
+The probabilistic (often semi-random, sometimes hectic) nature of LLMs
+makes this a challenge.</p>
+<p>Prompt engineering is a huge piece of the puzzle in terms of how to do this
+right, especially given the complexity, risks, and drawbacks around
+model tuning.</p>
+<p>We believe product builders need to tame AI through proper, rigorous
+<strong>prompt engineering</strong>. This allows making the probabilistic nature of
+AI more deterministic, or somewhat predictable, and allows builders to apply
+a hyperparameter tuning-type mindset and approach to prompt engineering.</p>
+<p>Any prompt-generator logic that’s going to be let loose in the wild inside
+a product should be thoroughly tested and evaluated with “prompt cases” that
+cover the breath of what people may do in a product.</p>
+<p>In short, Promptimize allows you to test prompts at industrial scale,
+so that you can confidently use them in the products you are building.</p>
+</section>
+<section id="information-architecture">
+<h2>Information Architecture<a class="headerlink" href="#information-architecture" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Prompt:</strong> A Prompt instance is a certain test case, a single prompt
+with an associated set of evaluation functions to rate its success.</p></li>
+<li><p><strong>Evaluation:</strong> An evaluation function that reads the response and returns
+a success rate between <code class="code docutils literal notranslate"><span class="pre">0</span></code> and <code class="code docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+<li><p><strong>Suite:</strong> A Suite is a collection of Prompt; it’s able to run things,
+accumulate results, and print reports about its collection of use cases.</p></li>
+<li><p><strong>Report</strong>: a report is the compiled results of running a certain prompt
+<code class="code docutils literal notranslate"><span class="pre">Suite</span></code> or set of suites. Reports can be consumed, compared, and expanded.</p></li>
+</ul>
+</section>
+<section id="principles">
+<h2>Principles<a class="headerlink" href="#principles" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Configuration as code:</strong> All prompt cases, suites, and evaluations are
+defined as code, which makes it easy to dynamically generate all sorts
+of use cases and suites.</p></li>
+<li><p><strong>Expressive</strong>: a clean DSL that’s to-the-point -&gt; user prompt + assertions.
+the actually prompt creation logic lives in the derivative class of <code class="code docutils literal notranslate"><span class="pre">PromptCase</span></code>,
+so that we can have clean, dense files that contain nice <code class="code docutils literal notranslate"><span class="pre">Suite</span></code>s</p></li>
+<li><p><strong>Support the iteration mindset:</strong> making it easy for people to try things,
+get suggestions from the AI, adapt, compare, and push forward</p></li>
+<li><p><strong>Extensibility:</strong> the toolkit is designed to be extremely hackable and
+extensible. Hooks, extensions, high API surface.</p></li>
+<li><p><strong>AI-powered:</strong> the framework offers ways to expand your suites based
+on the examples that exists. Use AI to generate more prompt cases!</p></li>
+</ul>
+</section>
+<section id="interesting-features-facts">
+<h2>Interesting features / facts<a class="headerlink" href="#interesting-features-facts" title="Permalink to this heading">¶</a></h2>
+<p>Listing out a few features you should know about that you can start using as your
+suites of prompts become larger / more complex</p>
+<ul class="simple">
+<li><p>evaluation functions are assumed to return a value between 0 and 1.
+contrarily to unit tests, prompt cases aren’t boolean</p></li>
+<li><p>prompts can be assigned a <code class="code docutils literal notranslate"><span class="pre">weight</span></code> (default 1) this enables you to define
+which prompts are more important than others for reporting purposes and suite evaluation</p></li>
+<li><p>prompts can be assigned a <code class="code docutils literal notranslate"><span class="pre">category</span></code>, this can be used in the reporting.
+That helps understanding which categories are performing better than
+others, or are most affected by iterations</p></li>
+<li><p>The <code class="code docutils literal notranslate"><span class="pre">Prompt</span></code> class <code class="code docutils literal notranslate"><span class="pre">pre_run</span></code> and <code class="code docutils literal notranslate"><span class="pre">post_run</span></code> hooks if you want to do
+post-processing for instance. An example of that would be if you do a prompt
+that expects GPT to generate code, and you’d like actually say run that code
+and test it. In our SQL implementation, we run the SQL against the database
+for instance and get a pandas dataframe back, and allow doing assertions
+on the dataframe itself</p></li>
+</ul>
+</section>
+<section id="setup">
+<h2>Setup<a class="headerlink" href="#setup" title="Permalink to this heading">¶</a></h2>
+<p>To install the Promptimize package, use the following command:</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">promptimize</span>
+</pre></div>
+</div>
+</section>
+<section id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this heading">¶</a></h2>
+<p>First you’ll need an openai API key, let’s set it as an env var</p>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">OPENAI_API_KEY</span><span class="o">=</span><span class="n">sk</span><span class="o">-</span><span class="p">{</span><span class="n">REDACTED</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Find the examples bellow <a class="reference external" href="https://github.com/preset-io/promptimize/blob/master/examples/readme_examples.py">here</a></p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># NOTE: CLI is `promptimize`, but `p9e` is a shorter synonym, can be used interchangibly</span>
+
+<span class="c1"># First let&#39;s run some of the examples</span>
+<span class="n">p9e</span> <span class="o">./</span><span class="n">examples</span>
+
+<span class="c1"># Now the same but with verbose output</span>
+<span class="n">p9e</span> <span class="o">./</span><span class="n">examples</span> <span class="o">--</span><span class="n">verbose</span>
+</pre></div>
+</div>
+</section>
+<section id="langchain">
+<h2>Langchain?<a class="headerlink" href="#langchain" title="Permalink to this heading">¶</a></h2>
+<p>How does promptimize relate to <code class="code docutils literal notranslate"><span class="pre">langchain</span></code>?</p>
+<p>We think langchain is amazing and promptimize uses langchain under the
+hood to interact with openai, and has integration with langchain
+(see <code class="code docutils literal notranslate"><span class="pre">LangchainPromptCase</span></code>, and the upcoming <code class="code docutils literal notranslate"><span class="pre">LangchainChainPromptCase</span></code>
+and <code class="code docutils literal notranslate"><span class="pre">LangchainAgntPromptCase</span></code>)
+While you don’t have to use
+langchain, and could use promptimize on top of any python prompt generation
+whether it’d be another library or some home grown thing.</p>
+</section>
+<section id="context">
+<h2>Context<a class="headerlink" href="#context" title="Permalink to this heading">¶</a></h2>
+<img src="https://user-images.githubusercontent.com/487433/230508578-456a7040-1184-433a-a555-dceb7c28c32c.png" width="75" title="Max"/><p>Where is <code class="code docutils literal notranslate"><span class="pre">promptimize</span></code> coming from!? I’m (Maxime Beauchemin) a startup
+founder at <a href="www.preset.io">Preset</a> working on brining AI to BI
+(data exploration,
+and visualization). At Preset, we use <code class="code docutils literal notranslate"><span class="pre">promptimize</span></code> to generate
+complex SQL based on natural language, and to suggest charts to users. We
+derive the <code class="code docutils literal notranslate"><span class="pre">SimpleQuery</span></code> class to make it fitted to our specific use
+cases in our own prompt engineering repo. Not my first open source project
+as the creator of
+<a class="reference external" href="https://github.com/apache/superset/">Apache Superset</a> and
+<a class="reference external" href="https://github.com/apache/airflow/">Apache Airflow</a></p>
+</section>
+<section id="contribute">
+<h2>Contribute<a class="headerlink" href="#contribute" title="Permalink to this heading">¶</a></h2>
+<p>This project is in its super early stages as of <code class="code docutils literal notranslate"><span class="pre">0.1.0</span></code>, and contributions,
+contributors, and maintainers are highly encouraged. While it’s a great time
+to onboard and influence the direction of the project, things are still
+evolving quickly. To get involved, open a GitHub issue
+or submit a pull request!</p>
+</section>
+<section id="links">
+<h2>Links<a class="headerlink" href="#links" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://preset.io/blog/">Blog - Mastering AI-Powered Product Development: Introducing Promptimize for Test-Driven Prompt Engineering</a></p></li>
+<li><p><a class="reference external" href="https://preset.io/blog/">Preset Blog</a></p></li>
+</ul>
+</section>
+</section>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-promptimize.prompt_cases">PromptCase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-promptimize.suite">Suite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-promptimize.reports">Report</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-promptimize.evals">Evaluators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-promptimize.utils">Utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">The CLI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#promptimize">promptimize</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="#">
+              <img class="logo" src="https://user-images.githubusercontent.com/487433/229948453-36cbc2d1-e71f-4e87-9111-ab428bc96f4c.png" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="#">promptimize</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Content</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">The CLI</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="api.html" title="next chapter">API</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Maxime Beauchemin.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 6.1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
