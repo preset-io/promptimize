@@ -4,8 +4,8 @@
 Promptimize is a prompt engineering evaluation and testing toolkit.
 
 It accelerates and provides structure around prompt engineering at scale
-and with confidence, brining some of the ideas behind test-driven
-developmet (TDD) to iterating on prompts.
+with confidence, brigning some of the ideas behind test-driven
+developmet (TDD) to engineering prompts.
 
 With promptimize, you can:
 
@@ -19,8 +19,10 @@ With promptimize, you can:
   around how different prompt suites are performing against one-another.
   Which individual cases or categories of cases improved? regressed?
 - Minimize API calls! only re-assess what changed as you change it
+- Perform human if and where needed, introspected failed cases, overriding
+  false negatives
 
-In essence, promptimize provides a programmatic way to define and fine-tune
+In essence, promptimize provides a programmatic way to execute and fine-tune
 your prompts and evaluation functions in Python, allowing you to iterate
 quickly and with confidence.
 
@@ -72,7 +74,7 @@ a hyperparameter tuning-type mindset and approach to prompt engineering.
 
 Any prompt-generator logic that's going to be let loose in the wild inside
 a product should be thoroughly tested and evaluated with "prompt cases" that
-fully cover the breath of what people may do in a product.
+cover the breath of what people may do in a product.
 
 In short, Promptimize allows you to test prompts at industrial scale,
 so that you can confidently use them in the products you are building.
@@ -81,7 +83,7 @@ so that you can confidently use them in the products you are building.
 
 - **Prompt:** A Prompt instance is a certain test case, a single prompt
   with an associated set of evaluation functions to rate its success.
-- **Eval:** An evaluation function that reads the response and returns
+- **Evaluation:** An evaluation function that reads the response and returns
   a success rate between `0` and `1`.
 - **Suite:** A Suite is a collection of Prompt; it's able to run things,
   accumulate results, and print reports about its collection of use cases.
@@ -110,7 +112,7 @@ Listing out a few features you should know about that you can start using as you
 suites of prompts become larger / more complex
 
 * evaluation functions are assumed to return a value between 0 and 1.
-  contrarily  to unit tests, prompt cases aren't boolean!
+  contrarily to unit tests, prompt cases aren't boolean
 * prompts can be assigned a `weight` (default 1) this enables you to define
   which prompts are more important than others for reporting purposes and suite evaluation
 * prompts can be assigned a `category`, this can be used in the reporting.
@@ -183,6 +185,8 @@ as the creator of
 
 ## Contribute
 
-This project is in its early stages (0.1.0), and contributions, contributors,
-and maintainers are highly encouraged. To get involved, open a GitHub issue
-or submit a pull request.
+This project is in its super early stages as of `0.1.0`, and contributions,
+contributors, and maintainers are highly encouraged. While it's a great time
+to onboard and influence the direction of the project, things are still
+evolving quickly. To get involved, open a GitHub issue
+or submit a pull request!

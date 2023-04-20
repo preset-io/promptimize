@@ -90,6 +90,7 @@ def run(
     shuffle,
     limit,
 ):
+    """Run some prompts/suites!"""
     click.secho("💡 ¡promptimize! 💡", fg="cyan")
     if dry_run:
         click.secho("# DRY RUN MODE ACTIVATED!", fg="red")
@@ -130,7 +131,7 @@ def run(
 cli.add_command(run)
 
 
-@click.command(help="run some prompts")
+@click.command(help="report on how your suites of prompts are performing")
 @click.argument(
     "path",
     required=True,
@@ -138,6 +139,7 @@ cli.add_command(run)
 )
 @click.option("--groupby", "-g", help="GROUPBY")
 def report(path, groupby):
+    """Get some summary of how your prompt suites are performing"""
     click.secho(f"# Reading report @ {path}", fg="yellow")
     report = Report.from_path(path)
     report.print_summary(groupby)
