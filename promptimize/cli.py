@@ -137,7 +137,7 @@ cli.add_command(run)
     required=True,
     type=click.Path(exists=True),
 )
-@click.option("--groupby", "-g", help="GROUPBY")
+@click.option("--groupby", "-g", help="GROUPBY", default="category")
 def report(path, groupby):
     """Get some summary of how your prompt suites are performing"""
     click.secho(f"# Reading report @ {path}", fg="yellow")

@@ -5,5 +5,5 @@
    :maxdepth: 2
    :caption: Content
 
-   prompts
-   suite
+   api
+   cli

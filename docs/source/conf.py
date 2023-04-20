@@ -18,6 +18,7 @@ extensions: List = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",  # Optional, for Google and NumPy-style docstrings
     "recommonmark",  # If you're using the recommonmark extension
+    "sphinx_click.ext",
 ]
 
 
@@ -29,4 +30,5 @@ exclude_patterns: List = []
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "alabaster"
+html_logo = "https://user-images.githubusercontent.com/487433/229948453-36cbc2d1-e71f-4e87-9111-ab428bc96f4c.png"
 html_static_path = ["_static"]

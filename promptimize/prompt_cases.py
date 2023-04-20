@@ -11,6 +11,8 @@ from promptimize.simple_jinja import process_template
 
 
 class BasePromptCase:
+    """Abstract base prompt case"""
+
     attributes_used_for_hash = set()
     verbose_attrs = {"prompt"}
 
@@ -163,6 +165,8 @@ class BasePromptCase:
 
 
 class PromptCase(BasePromptCase):
+    """A simple prompt case"""
+
     attributes_used_for_hash = BasePromptCase.attributes_used_for_hash | {"user_input"}
 
     def __init__(

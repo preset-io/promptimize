@@ -190,3 +190,8 @@ contributors, and maintainers are highly encouraged. While it's a great time
 to onboard and influence the direction of the project, things are still
 evolving quickly. To get involved, open a GitHub issue
 or submit a pull request!
+
+## Links
+* [Blog - Mastering AI-Powered Product Development: Introducing Promptimize for Test-Driven Prompt Engineering](https://preset.io/blog/)
+* [Preset Blog](https://preset.io/blog/)
+* [Promptimize DOCS](https://preset-io.github.io/promptimize/)

@@ -5,7 +5,7 @@ All functions here are expected to:
 * receive a response string
 * [optional] receive arbitrary extra context
 * return a value from 0 to 1, 0 representing failing at the task, 1 full
-  success, and a range in-between
+success, and a range in-between
 """
 
 from typing import List

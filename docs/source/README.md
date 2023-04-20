@@ -1,18 +1,30 @@
 # 💡 ¡promptimize! 💡
 <img src="https://user-images.githubusercontent.com/487433/229948453-36cbc2d1-e71f-4e87-9111-ab428bc96f4c.png" width=300/>
 
-**Promptimize** is a toolkit that accelerates prompt engineering,
-crafting, and evaluation.
+Promptimize is a prompt engineering evaluation and testing toolkit.
 
-Use `promptimize` to
-- define your prompts as code and tie them to evaluation functions
-- generate prompt variations dynamically
-- execute and rank across different engines
-- get reporting on how your prompts perform
+It accelerates and provides structure around prompt engineering at scale
+with confidence, brigning some of the ideas behind test-driven
+developmet (TDD) to engineering prompts.
 
-In short, `promptimize` offers a programmatic way to define and tune
-your prompt and evaluation functions in Python in a way that allows
-you to iterate quickly and confidently.
+With promptimize, you can:
+
+- Define your "prompt cases" (think "test cases" but specific to evaluating
+  prompts) as code and associate them with evaluation functions
+- Generate prompt variations dynamically
+- Execute and rank prompts test suites across different
+  engines/models/temperature/settings and compare results, brining
+  the hyperparameter tuning mindset to prompt engineering
+- Get reports on your prompts' performance as you iterate. Answer question
+  around how different prompt suites are performing against one-another.
+  Which individual cases or categories of cases improved? regressed?
+- Minimize API calls! only re-assess what changed as you change it
+- Perform human if and where needed, introspected failed cases, overriding
+  false negatives
+
+In essence, promptimize provides a programmatic way to execute and fine-tune
+your prompts and evaluation functions in Python, allowing you to iterate
+quickly and with confidence.
 
 ## Hello world - the simplest prompt examples
 [more examples on GitHub](https://github.com/preset-io/promptimize/tree/master/examples)
@@ -31,8 +43,8 @@ simple_prompts = [
 
     # Prompting "hello there" and making sure there's "hi" or "hello"
     # somewhere in the answer
-    SimplePrompt("hello there!", lambda x: evals.any_word(x, ["hi", "hello"])),
-    SimplePrompt(
+    PromptCase("hello there!", lambda x: evals.any_word(x, ["hi", "hello"])),
+    PromptCase(
         "name the top 50 guitar players!", lambda x: evals.all_words(x, ["frank zappa"])
     ),
 ]
@@ -40,8 +52,9 @@ simple_prompts = [
 
 ### The CLI
 ```bash
-$ promptimize examples/readme_hello_world.py
+$ promptimize -h
 ```
+
 
 ## Problem + POV
 
@@ -59,29 +72,59 @@ We believe product builders need to tame AI through proper, rigorous
 AI more deterministic, or somewhat predictable, and allows builders to apply
 a hyperparameter tuning-type mindset and approach to prompt engineering.
 
-In short, Promptimize allows you to generate and test prompts at industrial scale,
+Any prompt-generator logic that's going to be let loose in the wild inside
+a product should be thoroughly tested and evaluated with "prompt cases" that
+cover the breath of what people may do in a product.
+
+In short, Promptimize allows you to test prompts at industrial scale,
 so that you can confidently use them in the products you are building.
 
 ## Information Architecture
 
 - **Prompt:** A Prompt instance is a certain test case, a single prompt
   with an associated set of evaluation functions to rate its success.
-- **Eval:** An evaluation function that reads the response and returns
+- **Evaluation:** An evaluation function that reads the response and returns
   a success rate between `0` and `1`.
 - **Suite:** A Suite is a collection of Prompt; it's able to run things,
   accumulate results, and print reports about its collection of use cases.
+- **Report**: a report is the compiled results of running a certain prompt
+  `Suite` or set of suites. Reports can be consumed, compared, and expanded.
 
 ## Principles
 
-- **Configuration as code:** All use cases, suites, and evaluations are defined as code,
-  which makes it easy to dynamically generate all sorts of use cases and suites.
+- **Configuration as code:** All prompt cases, suites, and evaluations are
+  defined as code, which makes it easy to dynamically generate all sorts
+  of use cases and suites.
 - **Expressive**: a clean DSL that's to-the-point -> user prompt + assertions.
-  the actually prompt creation logic lives in the derivative class of `Prompt`,
+  the actually prompt creation logic lives in the derivative class of `PromptCase`,
   so that we can have clean, dense files that contain nice `Suite`s
 - **Support the iteration mindset:** making it easy for people to try things,
   get suggestions from the AI, adapt, compare, and push forward
 - **Extensibility:** the toolkit is designed to be extremely hackable and
   extensible. Hooks, extensions, high API surface.
+- **AI-powered:** the framework offers ways to expand your suites based
+  on the examples that exists. Use AI to generate more prompt cases!
+
+
+## Interesting features / facts
+
+Listing out a few features you should know about that you can start using as your
+suites of prompts become larger / more complex
+
+* evaluation functions are assumed to return a value between 0 and 1.
+  contrarily to unit tests, prompt cases aren't boolean
+* prompts can be assigned a `weight` (default 1) this enables you to define
+  which prompts are more important than others for reporting purposes and suite evaluation
+* prompts can be assigned a `category`, this can be used in the reporting.
+  That helps understanding which categories are performing better than
+  others, or are most affected by iterations
+* The `Prompt` class `pre_run` and `post_run` hooks if you want to do
+  post-processing for instance. An example of that would be if you do a prompt
+  that expects GPT to generate code, and you'd like actually say run that code
+  and test it. In our SQL implementation, we run the SQL against the database
+  for instance and get a pandas dataframe back, and allow doing assertions
+  on the dataframe itself
+
 
 ## Setup
 
@@ -100,74 +143,7 @@ export OPENAI_API_KEY=sk-{REDACTED}
 Find the examples bellow [here](https://github.com/preset-io/promptimize/blob/master/examples/readme_examples.py)
 
 ```python
-# Brining some "prompt generator" classes
-from promptimize.prompts import SimplePrompt, TemplatedPrompt
-
-# Bringing some useful eval function that help evaluating and scoring responses
-# eval functions have a handle on the prompt object and are expected
-# to return a score between 0 and 1
-from promptimize import evals
-
-# Promptimize will scan the target folder and find all Prompt objects
-# and derivatives that are in the python modules
-simple_prompts = [
-
-    # Prompting "hello there" and making sure there's "hi" or "hello"
-    # somewhere in the answer
-    SimplePrompt("hello there!", lambda x: evals.any_word(x, ["hi", "hello"])),
-
-    # Making sure 3 specific guitar players are in the top 50
-    # the score here is a percentage of the words found
-    SimplePrompt(
-        "who are the top 50 best guitar players of all time?",
-        lambda x: evals.percentage_of_words(
-            x, ["frank zappa", "david gilmore", "carlos santana"]
-        ),
-    ),
-    # GPT-ing myself and making sure the response mentions Superset and Airflow
-    SimplePrompt(
-        "who is Maxime Beauchemin, (the data guy...)?",
-        lambda x: evals.percentage_of_words(x, ["superset", "airflow"], case_sensitive=False),
-    ),
-]
-
-# deriving TemplatedPrompt to generate prompts that ask GPT to generate SQL
-# based on table schemas. The point here is you can derive the `Prompt`
-# class to create more specialized Prompt generators
-# For instance, the SqlPropt class defined bellow could be extended to fetch
-# schema definitions dynamically, acutally run the SQL, and allow
-# doing evals against the resultset.
-
-class SqlPrompt(TemplatedPrompt):
-    # the TemplatedPrompt expects a dict of defaults that can be overriden in the constructor
-    template_defaults = {"dialect": "Postgres"}
-    # The actual Jinja2 template
-    prompt_template = """\
-    given these SQL table schemas:
-        CREATE TABLE world_population (
-            country_name STRING,
-            year DATE,
-            population_total INT,
-        );
-
-    So, can you write a SQL query for {{ dialect }} that answers this user prompt:
-    {{ input }}
-    """
-
-# Generating a few SQL prompts
-sql_prompts = [
-    SqlPrompt(
-        # the user input that'll be added in place of {{ input }} in the template above
-        "give me the top 10 countries with the highest net increase of population over the past 25 years?",
-        # the dialect template parameter, overriding the default set above
-        dialect="BigQuery",
-        # a simple validation function making sure the SQL starts with SELECT
-        evaluators=[lambda x: x.trim().startswith("SELECT")],
-    ),
-]
-
 ```
-
 ```bash
 # NOTE: CLI is `promptimize`, but `p9e` is a shorter synonym, can be used interchangibly
 
@@ -178,27 +154,18 @@ p9e ./examples
 p9e ./examples --verbose
 
 ```
+## Langchain?
 
-Now take a look at the definitions of what you just ran here ->
-[Promptimize examples on GitHub](https://github.com/preset-io/promptimize/tree/master/examples)
+How does promptimize relate to `langchain`?
 
-## The CLI
-```bash
-$ promptimize --help
-Usage: promptimize [OPTIONS] PATH
+We think langchain is amazing and promptimize uses langchain under the
+hood to interact with openai, and has integration with langchain
+(see `LangchainPromptCase`, and the upcoming `LangchainChainPromptCase`
+and `LangchainAgntPromptCase`)
+While you don't have to use
+langchain, and could use promptimize on top of any python prompt generation
+whether it'd be another library or some home grown thing.
 
-
-Options:
-  -v, --verbose             Trigger more verbose output
-  -s, --style [json|yaml]   json or yaml formatting
-  -m, --max-tokens INTEGER  max_tokens passed to the model
-  -t, --temperature FLOAT   max_tokens passed to the model
-  -e, --engine TEXT         model as accepted by the openai API
-  --help                    Show this message and exit.
-```
-
-## Resources
-* [GPT interactive playground](https://platform.openai.com/playground/p/default-adv-tweet-classifier)
 
 ## Context
 
@@ -215,19 +182,15 @@ as the creator of
 [Apache Superset](https://github.com/apache/superset/) and
 [Apache Airflow](https://github.com/apache/airflow/)
 
-## Disclaimer
 
-"Publish early, publish often!" This project is pretty much at `0.1.0`
-and the creator is a busy man
-(running www.preset.io), and actually extending and using this toolkit
-to work on bringing AI to BI. Contributions, contributors and maintainers
-are more than welcomed! Looking forward to engage directly with all
-contributors! To get involved, open an GitHub issue detailing how you'd
-like to get involved, or just open a PR!
+## Contribute
 
+This project is in its super early stages as of `0.1.0`, and contributions,
+contributors, and maintainers are highly encouraged. While it's a great time
+to onboard and influence the direction of the project, things are still
+evolving quickly. To get involved, open a GitHub issue
+or submit a pull request!
 
-## TODO
-- weight
-- --silent
-- --ouput
-- SHA + DIRTY
+## Links
+* [Blog - Mastering AI-Powered Product Development: Introducing Promptimize for Test-Driven Prompt Engineering](https://preset.io/blog/)
+* [Preset Blog](https://preset.io/blog/)

@@ -5,3 +5,4 @@ twine
 sphinx
 sphinxcontrib-napoleon
 recommonmark
+sphinx-click
