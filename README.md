@@ -54,12 +54,73 @@ simple_prompts = [
 ```
 
 ### The CLI
-```bash
-$ promptimize run my_prompts.py --output ./results.yaml
+```
+$ promptimize run --help
+Usage: promptimize run [OPTIONS] PATH
 
-$ promptimize --help
+  run some prompts
+
+Options:
+  -v, --verbose             Trigger more verbose output
+  -f, --force               Force run, do not skip
+  -h, --human               Human review, allowing a human to review and force
+                            pass/fail each prompt case
+  -r, --repair              Only re-run previously failed
+  -x, --dry-run             DRY run, don't call the API
+  --shuffle                 Shuffle the prompts in a random order
+  -s, --style [json|yaml]   json or yaml formatting
+  -m, --max-tokens INTEGER  max_tokens passed to the model
+  -l, --limit INTEGER       limit how many prompt cases to run in a single
+                            batch
+  -t, --temperature FLOAT   max_tokens passed to the model
+  -e, --engine TEXT         model as accepted by the openai API
+  -k, --key TEXT            The keys to run
+  -o, --output PATH
+  -s, --silent
+
+$ promptimize run examples/
 ```
 
+```yaml
+💡 ¡promptimize! 💡
+# ----------------------------------------
+# (1/2) [RUN] prompt: prompt-115868ef
+# ----------------------------------------
+key: prompt-115868ef
+user_input: hello there!
+prompt_hash: 115868ef
+response: Hi there! How are you doing today?
+execution:
+  api_call_duration_ms: 883.8047981262207
+  run_at: '2023-04-25T02:21:40.443077'
+  score: 1.0
+
+# ----------------------------------------
+# (2/2) [RUN] prompt: prompt-5c085656
+# ----------------------------------------
+key: prompt-5c085656
+user_input: name the top 10 guitar players!
+prompt_hash: 5c085656
+response: |-
+  1. Jimi Hendrix
+  2. Eric Clapton
+  {{ ... }}
+  11. Carlos Santana
+weight: 2
+execution:
+  api_call_duration_ms: 2558.135747909546
+  run_at: '2023-04-25T02:21:43.007529'
+  score: 0.0
+
+# ----------------------------------------
+# Suite summary
+# ----------------------------------------
+suite_score: 0.3333333333333333
+git_info:
+  sha: 2cf28498ba0f
+  branch: main
+  dirty: true
+```
 
 ## Problem + POV
 
