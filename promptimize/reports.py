@@ -62,7 +62,6 @@ class Report:
         try:
             with open(path, "r") as f:
                 report = cls(path, yaml.safe_load(f))
-            report.fix_stuff()
             return report
         except FileNotFoundError:
             return None
@@ -72,14 +71,6 @@ class Report:
         """load a report object from a suite instance"""
         report = cls(data=suite.to_dict())
         return report
-
-    def fix_stuff(self):
-        # DELETEME
-        for p in self.prompts.values():
-            p.execution.score = 1 if p.execution.get("is_identical") else 0
-            if p.execution.get("test_results_avg"):
-                del p.execution.test_results_avg
-        self.write()
 
     def get_prompt(self, prompt_key):
         """get a specific prompt data structure from the report"""

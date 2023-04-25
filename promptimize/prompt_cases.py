@@ -105,6 +105,7 @@ class BasePromptCase:
             "key": self.key,
             "prompt_hash": self.prompt_hash,
             "prompt": self.prompt,
+            "category": self.category,
             "response": self.response,
             "weight": self.weight,
             "execution": self.execution.to_dict(),

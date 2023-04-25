@@ -4,11 +4,11 @@
 
 <img src="https://user-images.githubusercontent.com/487433/229948453-36cbc2d1-e71f-4e87-9111-ab428bc96f4c.png" width=300/>
 
-Promptimize is a prompt engineering evaluation and testing toolkit.
+Promptimize is a prompt engineering **evaluation** and **testing** toolkit.
 
 It accelerates and provides structure around prompt engineering at scale
-with confidence, brigning some of the ideas behind test-driven
-developmet (TDD) to engineering prompts.
+with confidence, bringing some of the ideas behind test-driven
+development (TDD) to engineering prompts.
 
 With promptimize, you can:
 
@@ -53,7 +53,7 @@ simple_prompts = [
 ]
 ```
 
-### The CLI
+### The CLI's `run` command
 ```
 $ promptimize run --help
 Usage: promptimize run [OPTIONS] PATH
@@ -77,8 +77,11 @@ Options:
   -k, --key TEXT            The keys to run
   -o, --output PATH
   -s, --silent
+```
 
-$ promptimize run examples/
+Let's run those examples and produce a report `./report.yaml`
+```
+$ promptimize run examples/ --output ./report.yaml
 ```
 
 ```yaml
@@ -205,7 +208,7 @@ First you'll need an openai API key, let's set it as an env var
 export OPENAI_API_KEY=sk-{{ REDACTED }}
 ```
 
-Find the examples executed bellow
+Find the examples executed below
 [here](https://github.com/preset-io/promptimize/blob/main/examples/readme_examples.py)
 
 ```bash
@@ -215,10 +218,10 @@ cd promptimize
 
 # NOTE: CLI is `promptimize`, but `p9e` is a shorter synonym, can be used interchangibly
 # First let's run some of the examples
-p9e ./examples
+p9e run ./examples
 
 # Now the same but with verbose output
-p9e ./examples --verbose
+p9e run ./examples --verbose --output ./report.yaml
 
 ```
 ## Langchain
