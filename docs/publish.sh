@@ -23,7 +23,7 @@ git commit -a -m "Initial commit"
 git remote add origin https://github.com/preset-io/promptimize.git
 
 # Push the changes to the GitHub Pages repository
-git push -f origin master:gh-pages
+git push -f origin main:gh-pages
 
 # Return to the original directory
 cd ../..

@@ -27,7 +27,7 @@ your prompts and evaluation functions in Python, allowing you to iterate
 quickly and with confidence.
 
 ## Hello world - the simplest prompt examples
-[more examples on GitHub](https://github.com/preset-io/promptimize/tree/master/examples)
+[more examples on GitHub](https://github.com/preset-io/promptimize/tree/main/examples)
 ```python
 # Brining some "prompt generator" classes - note that you can derive and extend those
 from promptimize.prompts import SimplePrompt
@@ -142,7 +142,7 @@ First you'll need an openai API key, let's set it as an env var
 export OPENAI_API_KEY=sk-{REDACTED}
 ```
 
-Find the examples bellow [here](https://github.com/preset-io/promptimize/blob/master/examples/readme_examples.py)
+Find the examples bellow [here](https://github.com/preset-io/promptimize/blob/main/examples/readme_examples.py)
 
 ```python
 ```
