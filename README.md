@@ -262,6 +262,6 @@ evolving quickly. To get involved, open a GitHub issue
 or submit a pull request!
 
 ## Links
-* [Blog - Mastering AI-Powered Product Development: Introducing Promptimize for Test-Driven Prompt Engineering](https://preset.io/blog/)
+* [Blog - Mastering AI-Powered Product Development: Introducing Promptimize for Test-Driven Prompt Engineering](https://preset.io/blog/introducing-promptimize/)
 * [Preset Blog](https://preset.io/blog/)
 * [Promptimize DOCS](https://preset-io.github.io/promptimize/)

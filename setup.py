@@ -10,7 +10,7 @@ with open("README.md", "r", encoding="utf-8") as f:
 
 setup(
     name="promptimize",
-    version="0.2.0",
+    version="0.2.2",
     packages=find_packages(),
     include_package_data=True,
     install_requires=requirements,
