@@ -1,8 +1,9 @@
+flake8
 pre-commit
-setuptools
-wheel
-twine
-sphinx
-sphinxcontrib-napoleon
 recommonmark
+setuptools
+sphinx
 sphinx-click
+sphinxcontrib-napoleon
+twine
+wheel

@@ -1,4 +1,7 @@
 # 💡 ¡promptimize! 💡
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![PyPI version](https://badge.fury.io/py/promptimize.svg)](https://badge.fury.io/py/promptimize)
+
 <img src="https://user-images.githubusercontent.com/487433/229948453-36cbc2d1-e71f-4e87-9111-ab428bc96f4c.png" width=300/>
 
 Promptimize is a prompt engineering evaluation and testing toolkit.

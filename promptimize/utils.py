@@ -1,13 +1,10 @@
 import json
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 import subprocess
 import hashlib
-import json
 from datetime import datetime
 import re
 import time
-from contextlib import contextmanager
-
 from pygments import highlight
 from pygments.lexers import YamlLexer, JsonLexer
 from pygments.formatters import TerminalFormatter
@@ -61,7 +58,7 @@ def str_presenter(dumper, data):
     Some hack to get yaml output to use look good for multiline,
     which is common in this package
 
-    from: https://stackoverflow.com/questions/8640959/how-can-i-control-what-scalar-form-pyyaml-uses-for-my-data
+    from: https://shorturl.at/klvC1
     """
     if len(data.splitlines()) > 1 or "\n" in data or "\\n" in data:
         text_list = [line.rstrip() for line in data.splitlines()]
@@ -131,8 +128,9 @@ def to_yaml(data, highlighted=True):
 
 
 def to_json(data, highlighted=True):
-    data = json.dumps(output, indent=2)
+    data = json.dumps(data, indent=2)
     highlighted = highlight(data, JsonLexer(), TerminalFormatter())
+    return highlighted
 
 
 def serialize_object(data, style="yaml", highlighted=True):
@@ -156,9 +154,7 @@ def transform_strings(obj, transformation):
     if isinstance(obj, str):
         return transformation(obj)
     elif isinstance(obj, dict):
-        return {
-            key: transform_strings(value, transformation) for key, value in obj.items()
-        }
+        return {key: transform_strings(value, transformation) for key, value in obj.items()}
     elif isinstance(obj, list):
         return [transform_strings(item, transformation) for item in obj]
     elif isinstance(obj, tuple):
@@ -169,11 +165,7 @@ def transform_strings(obj, transformation):
 
 def get_git_info(sha_length: int = 12):
     try:
-        sha = (
-            subprocess.check_output(["git", "rev-parse", "HEAD"])
-            .decode("utf-8")
-            .strip()
-        )
+        sha = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode("utf-8").strip()
         if sha_length:
             sha = sha[:sha_length]
         branch = (
@@ -210,15 +202,19 @@ def insert_in_dict(
     after_key: Optional[Any] = None,
 ) -> Dict[Any, Any]:
     """
-    Insert a key/value pair in a dictionary at a specific position, before a specified key, or after a specified key.
+    Insert a key/value pair in a dictionary at a specific position, before a
+        specified key, or after a specified key.
 
     Args:
         dictionary (Dict[Any, Any]): The original dictionary.
         key (Any): The key to be inserted.
         value (Any): The value associated with the key.
-        position (Optional[int], optional): The position at which the key/value pair should be inserted. Defaults to None.
-        before_key (Optional[Any], optional): The key before which the new key/value pair should be inserted. Defaults to None.
-        after_key (Optional[Any], optional): The key after which the new key/value pair should be inserted. Defaults to None.
+        position (Optional[int], optional): The position at which the key/value pair
+            should be inserted. Defaults to None.
+        before_key (Optional[Any], optional): The key before which the new
+            key/value pair should be inserted. Defaults to None.
+        after_key (Optional[Any], optional): The key after which the new
+            key/value pair should be inserted. Defaults to None.
 
     Raises:
         ValueError: If more than one of 'position', 'before_key', or 'after_key' is specified.
@@ -229,9 +225,7 @@ def insert_in_dict(
         Dict[Any, Any]: A new dictionary with the inserted key/value pair.
     """
     if sum([bool(position is not None), bool(before_key), bool(after_key)]) > 1:
-        raise ValueError(
-            "Only one of 'position', 'before_key', or 'after_key' can be specified"
-        )
+        raise ValueError("Only one of 'position', 'before_key', or 'after_key' can be specified")
 
     if position is not None and (position > len(dictionary) or position < 0):
         raise ValueError("Position is out of range")
@@ -273,8 +267,7 @@ def hashable_repr(obj):
         return "".join(hashable_repr(item) for item in obj)
     elif isinstance(obj, dict):
         return "".join(
-            hashable_repr(key) + hashable_repr(value)
-            for key, value in sorted(obj.items())
+            hashable_repr(key) + hashable_repr(value) for key, value in sorted(obj.items())
         )
     elif callable(obj):
         return str(obj.__code__.co_code)
@@ -287,6 +280,4 @@ def trabulate(df, showindex=True, headers="keys"):
     for column in df.columns:
         if df[column].dtype == "int64":
             df[column] = df[column].astype(str)
-    return tabulate(
-        df, headers=headers, showindex=showindex, tablefmt="psql", floatfmt=".2f"
-    )
+    return tabulate(df, headers=headers, showindex=showindex, tablefmt="psql", floatfmt=".2f")

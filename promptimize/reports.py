@@ -21,11 +21,7 @@ class Report:
         """write the report to the filesystem"""
         path = path or self.path
         with open(path, "w") as f:
-            f.write(
-                utils.serialize_object(
-                    self.data.to_dict(), highlighted=False, style=style
-                )
-            )
+            f.write(utils.serialize_object(self.data.to_dict(), highlighted=False, style=style))
 
     def merge(self, report):
         """merge in another report into this one"""
@@ -100,7 +96,6 @@ class Report:
             self.print_summary(groupby=None)
 
         df = self.prompt_df()
-        weigthed_results = df["weight"] * df["execution.score"]
 
         df["score"] = df["weight"] * df["execution.score"]
 

@@ -28,8 +28,10 @@ class Suite:
 
     Attributes:
         name (Optional[str]): The name of the suite.
-        prompts (Dict[str, Prompt]): Dictionary of prompts to be tested, keyed by the prompt key.
-        last_run_completion_create_kwargs (Dict[str, Any]): Keyword arguments used in the last run for completion creation.
+        prompts (Dict[str, Prompt]): Dictionary of prompts to be tested,
+            keyed by the prompt key.
+        last_run_completion_create_kwargs (Dict[str, Any]): Keyword arguments
+            used in the last run for completion creation.
     """
 
     def __init__(
@@ -46,7 +48,7 @@ class Suite:
         self.prompts = {o.key: o for o in prompts}
         self.last_run_completion_create_kwargs: dict = {}
 
-    def execute(
+    def execute(  # noqa
         self,
         verbose: bool = False,
         style: str = "yaml",
@@ -86,13 +88,9 @@ class Suite:
             progress = f"({i+1}/{len(prompts)})"
             if not silent:
                 if should_run:
-                    separated_section(
-                        f"# {progress} [RUN] prompt: {prompt.key}", fg="cyan"
-                    )
+                    separated_section(f"# {progress} [RUN] prompt: {prompt.key}", fg="cyan")
                 else:
-                    separated_section(
-                        f"# {progress} [SKIP] prompt: {prompt.key}", fg="yellow"
-                    )
+                    separated_section(f"# {progress} [SKIP] prompt: {prompt.key}", fg="yellow")
 
             if should_run:
                 prompt._run(dry_run)

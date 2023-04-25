@@ -1,6 +1,5 @@
 import os
-from textwrap import dedent
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, List, Optional, Union
 
 from langchain.llms import OpenAI
 
@@ -33,10 +32,12 @@ class BasePromptCase:
 
         Args:
             user_input (str): Raw user_input for the prompt.
-            evaluators (Optional[Union[Callable, List[Callable]]]): Optional callable or list of callables used for evaluation.
+            evaluators (Optional[Union[Callable, List[Callable]]]): Optional
+                callable or list of callables used for evaluation.
             key (Optional[str]): Optional unique key for the prompt.
             weight (int, optional): Optional weight for the prompt (default: 1).
-            category (Optional[str], optional): Optional category for the prompt (used for info/reporting purposes only).
+            category (Optional[str], optional): Optional category for
+                the prompt (used for info/reporting purposes only).
         """
         self.extra_args = args
         self.extra_kwargs = kwargs
@@ -85,12 +86,7 @@ class BasePromptCase:
 
     def __hash__(self):
         attrs = self.attributes_used_for_hash
-        s = "|".join(
-            [
-                utils.short_hash(utils.hashable_repr(getattr(self, attr)))
-                for attr in attrs
-            ]
-        )
+        s = "|".join([utils.short_hash(utils.hashable_repr(getattr(self, attr))) for attr in attrs])
         return utils.int_hash(s)
 
     def render(self):
@@ -145,7 +141,6 @@ class BasePromptCase:
         return utils.short_hash(hash(self))
 
     def _run(self, dry_run):
-
         pre_run_output = self.pre_run()
         if pre_run_output:
             self.execution.pre_run_output = pre_run_output

@@ -1,15 +1,15 @@
-import os, sys
+import sys
 import importlib
 import pkgutil
 from pathlib import Path
-from typing import List, Type, Any, Union
+from typing import List, Type, Any
 
 
 def is_instance_or_derivative(obj: Any, object_type: Type) -> bool:
     return isinstance(obj, object_type)
 
 
-def discover_objects(path: str, object_type: Type) -> List[Any]:
+def discover_objects(path: str, object_type: Type) -> List[Any]:  # noqa
     objects = []
     folder_path = Path(path).resolve()
 
@@ -19,7 +19,8 @@ def discover_objects(path: str, object_type: Type) -> List[Any]:
             # Check if the object is an instance or derivative of the specified type
             if is_instance_or_derivative(obj, object_type):
                 objects.append(obj)
-            # Check if the object is a list or tuple containing instances or derivatives of the specified type
+            # Check if the object is a list or tuple containing instances or
+            # derivatives of the specified type
             elif isinstance(obj, (list, tuple)):
                 for item in obj:
                     if is_instance_or_derivative(item, object_type):

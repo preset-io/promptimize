@@ -1,12 +1,9 @@
-from textwrap import dedent
-
 import click
 
 from promptimize.crawler import discover_objects
 from promptimize.prompt_cases import BasePromptCase
 from promptimize.reports import Report
 from promptimize.suite import Suite
-from promptimize import utils
 
 
 @click.group(help="💡¡promptimize!💡 CLI. `p9e` works too!")

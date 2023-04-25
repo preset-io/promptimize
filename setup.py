@@ -10,7 +10,7 @@ with open("README.md", "r", encoding="utf-8") as f:
 
 setup(
     name="promptimize",
-    version="0.1.0",
+    version="0.2.0",
     packages=find_packages(),
     include_package_data=True,
     install_requires=requirements,
@@ -25,4 +25,6 @@ setup(
     description="A python toolkit to generate and evaluate prompts for GPT at scale",
     long_description=readme,
     long_description_content_type="text/markdown",
+    license="Apache License, Version 2.0",
+    license_file="LICENSE",
 )

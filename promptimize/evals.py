@@ -11,9 +11,7 @@ success, and a range in-between
 from typing import List
 
 
-def percentage_of_words(
-    response: str, words: List[str], case_sensitive: bool = False
-) -> float:
+def percentage_of_words(response: str, words: List[str], case_sensitive: bool = False) -> float:
     """
     Calculate the percentage of words from a list that are present in the given response.
 
@@ -29,9 +27,11 @@ def percentage_of_words(
     Examples:
     >>> percentage_of_words_in_response("This is an Example string.", ["example", "test"])
     0.5
-    >>> percentage_of_words_in_response("This is an Example string.", ["Example"], case_sensitive=True)
+    >>> percentage_of_words_in_response(
+        "This is an Example string.", ["Example"], case_sensitive=True)
     1.0
-    >>> percentage_of_words_in_response("This is an Example string.", ["example"], case_sensitive=True)
+    >>> percentage_of_words_in_response(
+        "This is an Example string.", ["example"], case_sensitive=True)
     0.0
     >>> percentage_of_words_in_response("This is an Example string.", ["notfound"])
     0.0

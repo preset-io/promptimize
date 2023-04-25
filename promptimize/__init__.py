@@ -1,1 +1,1 @@
-from promptimize.cli import cli
+from promptimize.cli import cli  # noqa
