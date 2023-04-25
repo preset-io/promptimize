@@ -192,27 +192,28 @@ suites of prompts become larger / more complex
   on the dataframe itself
 
 
-## Setup
+
+## Getting started
 
 To install the Promptimize package, use the following command:
 ```bash
 pip install promptimize
 ```
 
-## Getting started
-
 First you'll need an openai API key, let's set it as an env var
 ```bash
-export OPENAI_API_KEY=sk-{REDACTED}
+export OPENAI_API_KEY=sk-{{ REDACTED }}
 ```
 
-Find the examples bellow [here](https://github.com/preset-io/promptimize/blob/main/examples/readme_examples.py)
+Find the examples executed bellow
+[here](https://github.com/preset-io/promptimize/blob/main/examples/readme_examples.py)
 
-```python
-```
 ```bash
-# NOTE: CLI is `promptimize`, but `p9e` is a shorter synonym, can be used interchangibly
+# Clone the repo
+git clone git@github.com:preset-io/promptimize.git
+cd promptimize
 
+# NOTE: CLI is `promptimize`, but `p9e` is a shorter synonym, can be used interchangibly
 # First let's run some of the examples
 p9e ./examples
 
@@ -220,7 +221,7 @@ p9e ./examples
 p9e ./examples --verbose
 
 ```
-## Langchain?
+## Langchain
 
 How does promptimize relate to `langchain`?
 
@@ -243,7 +244,7 @@ founder at <a href="www.preset.io">Preset</a> working on brining AI to BI
 and visualization). At Preset, we use `promptimize` to generate
 complex SQL based on natural language, and to suggest charts to users. We
 derive the `SimpleQuery` class to make it fitted to our specific use
-cases in our own prompt engineering repo. Not my first open source project
+cases in our own prompt engineering repo. It's not my first open source project
 as the creator of
 [Apache Superset](https://github.com/apache/superset/) and
 [Apache Airflow](https://github.com/apache/airflow/)
@@ -251,7 +252,7 @@ as the creator of
 
 ## Contribute
 
-This project is in its super early stages as of `0.1.0`, and contributions,
+This project is in its super early stages as of `0.2.0`, and contributions,
 contributors, and maintainers are highly encouraged. While it's a great time
 to onboard and influence the direction of the project, things are still
 evolving quickly. To get involved, open a GitHub issue
