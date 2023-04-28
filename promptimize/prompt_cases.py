@@ -2,6 +2,7 @@ import os
 from typing import Any, Callable, List, Optional, Union
 
 from langchain.llms import OpenAI
+from langchain.callbacks import get_openai_callback
 
 from box import Box
 
@@ -71,7 +72,15 @@ class BasePromptCase:
         return OpenAI(model_name=model_name, openai_api_key=openai_api_key)
 
     def execute_prompt(self, prompt_str):
-        self.response = self.prompt_executor(prompt_str)
+        with get_openai_callback() as cb:
+            self.response = self.prompt_executor(prompt_str)
+        self.execution.openai = Box()
+        oai = self.execution.openai
+        oai.total_tokens = cb.total_tokens
+        oai.prompt_tokens = cb.prompt_tokens
+        oai.completion_tokens = cb.completion_tokens
+        oai.total_cost = cb.total_cost
+
         return self.response
 
     def pre_run(self):
