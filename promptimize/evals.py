@@ -108,3 +108,15 @@ def all_words(response: str, words: List[str], case_sensitive: bool = False) -> 
     0
     """
     return _common_word_search(response, words, case_sensitive, match_type="all")
+
+
+base_all = all
+base_any = any
+
+
+def all(iteratable):
+    return 1 if base_all([i == 1 for i in iteratable]) else 0
+
+
+def any(iteratable):
+    return 1 if base_any([i == 1 for i in iteratable]) else 0

@@ -23,7 +23,6 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
     hooks:
-      - id: check-docstring-first
       - id: check-added-large-files
         exclude: \.(geojson)$
       - id: check-yaml

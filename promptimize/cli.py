@@ -54,7 +54,7 @@ def cli():
     "-t",
     type=click.FLOAT,
     default=0.5,
-    help="max_tokens passed to the model",
+    help="the temperature passed to the model",
 )
 @click.option(
     "--engine",

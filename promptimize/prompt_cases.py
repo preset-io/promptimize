@@ -110,6 +110,8 @@ class BasePromptCase:
             "weight": self.weight,
             "execution": self.execution.to_dict(),
         }
+        if hasattr(self, "error"):
+            d["error"] = self.error
         return d
 
     def print(self, verbose=False, style="yaml"):
@@ -133,6 +135,7 @@ class BasePromptCase:
 
         if len(test_results):
             self.execution.score = sum(test_results) / len(test_results)
+            self.execution.results = test_results
         self.was_tested = True
 
     @property
