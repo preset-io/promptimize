@@ -137,7 +137,7 @@ class BasePromptCase:
     def test(self):
         test_results = []
         for evaluator in self.evaluators:
-            result = evaluator(self)
+            result = evaluator(self.response)
             if not (utils.is_numeric(result) and 0 <= result <= 1):
                 raise Exception("Value should be between 0 and 1")
             test_results.append(result)
