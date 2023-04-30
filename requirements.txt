@@ -6,3 +6,4 @@ pygments
 pyyaml
 langchain
 tabulate
+pandas
