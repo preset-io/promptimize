@@ -126,7 +126,9 @@ def any(iteratable):
     return 1 if base_any([i == 1 for i in iteratable]) else 0
 
 
-def is_correct(response: str, question: str, predicted: str, model_name: Optional[str] = None) -> int:
+def is_correct(
+    response: str, question: str, predicted: str, model_name: Optional[str] = None
+) -> int:
     """
     Query a LLM to calculate the correctness of the prediction and the given response.
 
@@ -146,7 +148,7 @@ def is_correct(response: str, question: str, predicted: str, model_name: Optiona
     >>> is_correct("a dog", "a cat")
     0
     """
-    model_name = model_name or 'gpt-4'  # GPT-4 works great for evaluating correctness
+    model_name = model_name or "gpt-4"  # GPT-4 works great for evaluating correctness
     llm = ChatOpenAI(model_name=model_name, openai_api_key=os.environ.get("OPENAI_API_KEY"))
     prompt = PromptTemplate(
         input_variables=["response", "predicted", "question"],

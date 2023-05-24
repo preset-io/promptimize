@@ -21,7 +21,7 @@ simple_prompts = [
     PromptCase(
         "What is 2+2?",
         # we can put the results in number or in text as GPT will understand both
-        lambda x: evals.is_correct(x.response, question=x.prompt, predicted='four'),
+        lambda x: evals.is_correct(x.response, question=x.prompt, predicted="four"),
     ),
     # Making sure 3 specific guitar players are in the top 10
     # the score here is a percentage of the words found
