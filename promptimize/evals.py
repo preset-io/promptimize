@@ -127,18 +127,18 @@ def any(iteratable):
 
 
 def is_correct(
-    response: str, question: str, predicted: str, model_name: Optional[str] = None
+    response: str, question: str, expected: str, model_name: Optional[str] = None
 ) -> int:
     """
-    Query a LLM to calculate the correctness of the prediction and the given response.
+    Query a LLM to calculate the correctness of the expected and the given response.
 
     Args:
         question (str): The question to be answered.
         response (str): The answer given by the LLM.
-        predicted (str): The predicted answer.
+        expected (str): The expected answer.
 
     Returns:
-        int: 1 if the answer in the response is CORRECT to the predicted one; otherwise, 0.
+        int: 1 if the answer in the response is CORRECT to the expected one; otherwise, 0.
 
     Examples:
     >>> is_correct("5", "7")
@@ -151,9 +151,9 @@ def is_correct(
     model_name = model_name or "gpt-4"  # GPT-4 works great for evaluating correctness
     llm = ChatOpenAI(model_name=model_name, openai_api_key=os.environ.get("OPENAI_API_KEY"))
     prompt = PromptTemplate(
-        input_variables=["response", "predicted", "question"],
+        input_variables=["response", "expected", "question"],
         template=IS_CORRECT_TEMPLATE,
-    ).format(response=response, predicted=predicted, question=question)
+    ).format(response=response, expected=expected, question=question)
 
     response = llm.predict(prompt)
 
@@ -162,17 +162,17 @@ def is_correct(
 
 IS_CORRECT_TEMPLATE = """
 You are a teacher grading an answer.
-You are given a predicted anwer and the actual answer. You are asked to score the answer as either CORRECT or INCORRECT, based on the context.
+You are given a expected anwer and the actual answer. You are asked to score the answer as either CORRECT or INCORRECT, based on the context.
 
 Example Format:
 QUESTION: question here
-PREDICTED ANSWER: predicted answer here
+EXPECTED ANSWER: expected answer here
 ANSWER: actual answer here
 GRADE: CORRECT or INCORRECT here
 
-Grade the answers based ONLY on their factual accuracy. Ignore differences in punctuation and phrasing between the answer and true answer. It is OK if the answer contains more information than the true answer, as long as it does not contain any conflicting statements. Begin!
+Grade the answers based ONLY on their accuracy compared with the expected ones, no matter of the actual accuracy. Ignore differences in punctuation and phrasing between the answer and true answer. It is OK if the answer contains more information than the true answer, as long as it does not contain any conflicting statements. Begin!
 
 QUESTION: {question}
-PREDICTED ANSWER: {predicted}
+EXPECTED ANSWER: {expected}
 ANSWER: {response}
 GRADE: """
