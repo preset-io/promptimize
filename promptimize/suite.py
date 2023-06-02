@@ -32,7 +32,7 @@ class Suite:
             keyed by the prompt key.
         last_run_completion_create_kwargs (Dict[str, Any]): Keyword arguments
             used in the last run for completion creation.
-        efective_prompts (Dict[str, Prompt]): Dictionary of prompts that finally will be tested,
+        efective_prompts (List): List of prompts values that finally will be tested,
             keyed by the prompt key.
     """
 
