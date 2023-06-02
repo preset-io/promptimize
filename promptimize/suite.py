@@ -123,7 +123,7 @@ class Suite:
         if not silent:
             separated_section("# Suite summary", fg="cyan")
             click.echo(utils.serialize_object(self._serialize_run_summary(), style))
-            
+
     def reload_effective_prompts(
         self,
         report=None,
