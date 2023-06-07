@@ -1,7 +1,7 @@
 """
 Some basic examples for promptimize.
 
-to run, simply execute `p9e ./examples/readme_examples.py`
+to run, simply execute `p9e run ./examples/readme_examples.py`
 """
 # Brining some "prompt generator" classes
 from promptimize.prompt_cases import PromptCase, TemplatedPromptCase
