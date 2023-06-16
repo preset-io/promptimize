@@ -145,7 +145,7 @@ class PythonGeneratorPrompt(LangchainPromptCase):
             # self.error = str(e)
 
 
-sql_prompts = [
+prompts = [
     PythonGeneratorPrompt(
         lc_template,
         key="is_prime",
