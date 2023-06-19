@@ -32,6 +32,7 @@ class Suite:
             keyed by the prompt key.
         last_run_completion_create_kwargs (Dict[str, Any]): Keyword arguments
             used in the last run for completion creation.
+        efective_prompts (List): List of prompts values that finally will be tested.
     """
 
     def __init__(
@@ -47,6 +48,7 @@ class Suite:
         self.name = name
         self.prompts = {o.key: o for o in prompts}
         self.last_run_completion_create_kwargs: dict = {}
+        self.effective_prompts = list(self.prompts.values())
 
     def execute(  # noqa
         self,
@@ -70,18 +72,14 @@ class Suite:
             style (str): Output style for serialization. Defaults to "yaml".
             silent (bool): If True, suppress output. Defaults to False.
         """
-        prompts = list(self.prompts.values())
-        if keys:
-            prompts = [p for p in prompts if p.key in keys]
-        if repair and report:
-            failed_keys = report.failed_keys
-            prompts = [p for p in prompts if p.key in failed_keys]
-
-        if shuffle:
-            random.shuffle(prompts)
-
-        if limit:
-            prompts = prompts[:limit]
+        self.reload_effective_prompts(
+            report=report,
+            keys=keys,
+            repair=repair,
+            shuffle=shuffle,
+            limit=limit,
+        )
+        prompts = self.effective_prompts
 
         for i, prompt in enumerate(prompts):
             should_run = force or self.should_prompt_execute(prompt, report)
@@ -124,6 +122,27 @@ class Suite:
         if not silent:
             separated_section("# Suite summary", fg="cyan")
             click.echo(utils.serialize_object(self._serialize_run_summary(), style))
+
+    def reload_effective_prompts(
+        self,
+        report=None,
+        keys: list = None,
+        repair: bool = False,
+        shuffle: bool = False,
+        limit: int = 0,
+    ):
+        self.effective_prompts = list(self.prompts.values())
+        if keys:
+            self.effective_prompts = [p for p in self.effective_prompts if p.key in keys]
+        if repair and report:
+            failed_keys = report.failed_keys
+            self.effective_prompts = [p for p in self.effective_prompts if p.key in failed_keys]
+
+        if shuffle:
+            random.shuffle(self.effective_prompts)
+
+        if limit:
+            self.effective_prompts = effective_prompts[:limit]
 
     def should_prompt_execute(self, prompt, report):
         if not report or not report.prompts:
