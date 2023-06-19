@@ -176,7 +176,7 @@ class Suite:
         suite_score = None
         if len(tested) > 0:
             total_weight = sum([p.weight for p in tested])
-            suite_score = sum([p.execution.score for p in tested]) / total_weight
+            suite_score = sum([p.execution.score * p.weight for p in tested]) / total_weight
         d = {
             "suite_score": suite_score,
             "git_info": utils.get_git_info(),
