@@ -65,7 +65,10 @@ sql_prompts = [
         # you can pass a unique key that can we used to reference a prompt
         key="sql-top-10-inc",
         # the user input that'll be added in place of {{ input }} in the template above
-        user_input="give me the top 10 countries with the highest net increase of population over the past 25 years?",
+        user_input=(
+            "give me the top 10 countries with the highest net increase "
+            "of population over the past 25 years?"
+        ),
         # the dialect template parameter, overriding the default set above
         dialect="BigQuery",
         # a simple validation function making sure the SQL starts with SELECT
