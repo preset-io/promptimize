@@ -142,7 +142,7 @@ class Suite:
             random.shuffle(self.effective_prompts)
 
         if limit:
-            self.effective_prompts = effective_prompts[:limit]
+            self.effective_prompts = self.effective_prompts[:limit]
 
     def should_prompt_execute(self, prompt, report):
         if not report or not report.prompts:
