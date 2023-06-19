@@ -6,3 +6,5 @@ pygments
 pyyaml
 langchain
 tabulate
+pandas
+openai

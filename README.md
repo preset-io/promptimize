@@ -33,7 +33,7 @@ quickly and with confidence.
 [more examples on GitHub](https://github.com/preset-io/promptimize/tree/main/examples)
 ```python
 # Brining some "prompt generator" classes - note that you can derive and extend those
-from promptimize.prompts import SimplePrompt
+from promptimize.prompts import PromptCase
 
 # Bringing some useful eval function that help evaluating and scoring responses
 # eval functions have a handle on the prompt object and are expected

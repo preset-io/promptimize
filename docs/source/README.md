@@ -148,10 +148,10 @@ Find the examples bellow [here](https://github.com/preset-io/promptimize/blob/ma
 # NOTE: CLI is `promptimize`, but `p9e` is a shorter synonym, can be used interchangibly
 
 # First let's run some of the examples
-p9e ./examples
+p9e run ./examples
 
 # Now the same but with verbose output
-p9e ./examples --verbose
+p9e run ./examples --verbose
 
 ```
 ## Langchain?
