@@ -8,7 +8,11 @@ All functions here are expected to:
 success, and a range in-between
 """
 
-from typing import List
+import os
+from typing import List, Optional
+
+from langchain.chat_models import ChatOpenAI
+from langchain.prompts import PromptTemplate
 
 
 def percentage_of_words(response: str, words: List[str], case_sensitive: bool = False) -> float:
@@ -120,3 +124,55 @@ def all(iteratable):
 
 def any(iteratable):
     return 1 if base_any([i == 1 for i in iteratable]) else 0
+
+
+def is_correct(
+    response: str, question: str, expected: str, model_name: Optional[str] = None
+) -> int:
+    """
+    Query a LLM to calculate the correctness of the expected and the given response.
+
+    Args:
+        question (str): The question to be answered.
+        response (str): The answer given by the LLM.
+        expected (str): The expected answer.
+
+    Returns:
+        int: 1 if the answer in the response is CORRECT to the expected one; otherwise, 0.
+
+    Examples:
+    >>> is_correct("5", "7")
+    0
+    >>> is_correct("5", "5.0")
+    1
+    >>> is_correct("a dog", "a cat")
+    0
+    """
+    model_name = model_name or "gpt-4"  # GPT-4 works great for evaluating correctness
+    llm = ChatOpenAI(model_name=model_name, openai_api_key=os.environ.get("OPENAI_API_KEY"))
+    prompt = PromptTemplate(
+        input_variables=["response", "expected", "question"],
+        template=IS_CORRECT_TEMPLATE,
+    ).format(response=response, expected=expected, question=question)
+
+    response = llm.predict(prompt)
+
+    return 0 if "INCORRECT" in response else 1
+
+
+IS_CORRECT_TEMPLATE = """
+You are a teacher grading an answer.
+You are given a expected anwer and the actual answer. You are asked to score the answer as either CORRECT or INCORRECT, based on the context.
+
+Example Format:
+QUESTION: question here
+EXPECTED ANSWER: expected answer here
+ANSWER: actual answer here
+GRADE: CORRECT or INCORRECT here
+
+Grade the answers based ONLY on their accuracy compared with the expected ones, no matter of the actual accuracy. Ignore differences in punctuation and phrasing between the answer and true answer. It is OK if the answer contains more information than the true answer, as long as it does not contain any conflicting statements. Begin!
+
+QUESTION: {question}
+EXPECTED ANSWER: {expected}
+ANSWER: {response}
+GRADE: """
