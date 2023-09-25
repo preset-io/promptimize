@@ -242,7 +242,7 @@ whether it'd be another library or some home grown thing.
 <img src="https://user-images.githubusercontent.com/487433/230508578-456a7040-1184-433a-a555-dceb7c28c32c.png" width="75" title="Max"/>
 
 Where is `promptimize` coming from!? I'm (Maxime Beauchemin) a startup
-founder at <a href="www.preset.io">Preset</a> working on brining AI to BI
+founder at <a href="https://www.preset.io">Preset</a> working on brining AI to BI
 (data exploration,
 and visualization). At Preset, we use `promptimize` to generate
 complex SQL based on natural language, and to suggest charts to users. We
