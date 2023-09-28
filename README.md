@@ -16,7 +16,7 @@ With promptimize, you can:
   prompts) as code and associate them with evaluation functions
 - Generate prompt variations dynamically
 - Execute and rank prompts test suites across different
-  engines/models/temperature/settings and compare results, brining
+  engines/models/temperature/settings and compare results, bringing
   the hyperparameter tuning mindset to prompt engineering
 - Get reports on your prompts' performance as you iterate. Answer question
   around how different prompt suites are performing against one-another.
@@ -32,7 +32,7 @@ quickly and with confidence.
 ## Hello world - the simplest prompt examples
 [more examples on GitHub](https://github.com/preset-io/promptimize/tree/main/examples)
 ```python
-# Brining some "prompt generator" classes - note that you can derive and extend those
+# Bringing some "prompt generator" classes - note that you can derive and extend those
 from promptimize.prompts import PromptCase
 
 # Bringing some useful eval function that help evaluating and scoring responses
