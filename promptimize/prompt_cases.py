@@ -70,6 +70,8 @@ class BasePromptCase:
         openai_api_key = os.environ.get("OPENAI_API_KEY")
         self.prompt_executor_kwargs = {"model_name": model_name}
         if os.environ.get('OPENAI_API_TYPE') == 'azure':
+            if not os.environ.get("AZURE_DEPLOYMENT_NAME"):
+                raise Exception("Environment variable with key name 'AZURE_DEPLOYMENT_NAME' is required when OPEN_API_TYPE=='azure'.")
             return AzureOpenAI(model_name=model_name, deployment_name=os.environ.get('AZURE_DEPLOYMENT_NAME'))
         return OpenAI(model_name=model_name, openai_api_key=openai_api_key)
 
