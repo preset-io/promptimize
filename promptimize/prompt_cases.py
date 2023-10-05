@@ -72,7 +72,7 @@ class BasePromptCase:
         if os.environ.get("OPENAI_API_TYPE") == "azure":
             if not os.environ.get("AZURE_DEPLOYMENT_NAME"):
                 raise Exception(
-                    "Environment variable with key name 'AZURE_DEPLOYMENT_NAME'"\
+                    "Environment variable with key name 'AZURE_DEPLOYMENT_NAME'"
                     "is required when OPEN_API_TYPE=='azure'."
                 )
             return AzureOpenAI(
