@@ -3,6 +3,7 @@ Some basic examples for promptimize.
 
 to run, simply execute `p9e ./examples/readme_examples.py`
 """
+
 # Brining some "prompt generator" classes
 from promptimize.prompt_cases import PromptCase
 
