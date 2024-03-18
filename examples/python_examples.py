@@ -1,4 +1,5 @@
 """An example of how to test Python code generating prompts"""
+
 import re
 
 # Brining some "prompt generator" classes
