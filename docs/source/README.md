@@ -13,7 +13,7 @@ With promptimize, you can:
   prompts) as code and associate them with evaluation functions
 - Generate prompt variations dynamically
 - Execute and rank prompts test suites across different
-  engines/models/temperature/settings and compare results, brining
+  engines/models/temperature/settings and compare results, bringing
   the hyperparameter tuning mindset to prompt engineering
 - Get reports on your prompts' performance as you iterate. Answer question
   around how different prompt suites are performing against one-another.
