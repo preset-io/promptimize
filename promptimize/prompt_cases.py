@@ -1,7 +1,7 @@
 import os
 from typing import Any, Callable, List, Optional, Union
 
-from langchain.llms import OpenAI
+from langchain_community.llms import OpenAI
 from langchain.callbacks import get_openai_callback
 
 from box import Box

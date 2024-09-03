@@ -5,6 +5,7 @@ click
 pygments
 pyyaml
 langchain
+langchain-community
 tabulate
 pandas
 openai
