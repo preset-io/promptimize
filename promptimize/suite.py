@@ -3,6 +3,7 @@ This module provides a Suite class to manage and execute a collection of
 use cases (prompts) to be tested. It allows running the tests, displaying
 results, and serializing the summary of the suite.
 """
+
 import random
 from typing import Any, Dict, List, Optional, Union
 
