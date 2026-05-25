@@ -1,4 +1,5 @@
 """An example of how to test Python code generating prompts"""
+
 import re
 
 # Brining some "prompt generator" classes
@@ -14,7 +15,6 @@ import demjson
 from RestrictedPython import compile_restricted, safe_globals, safe_builtins
 from RestrictedPython.Guards import guarded_unpack_sequence
 from RestrictedPython.Eval import default_guarded_getiter
-
 
 response_schemas = [
     ResponseSchema(
